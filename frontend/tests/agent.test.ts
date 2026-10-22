@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import { runAgent } from "@/lib/kl/agent"
-import { corroborate } from "@/lib/kl/check"
+import { ObservationSchema, corroborate } from "@/lib/kl/check"
 import { LlmNotConfigured, extractJson, generateJson, generateText, llmConfigured, setLlmClientForTests, type LlmClient } from "@/lib/kl/llm"
 import type { PhotoObservation } from "@/lib/kl/types"
 import { z } from "zod"
@@ -67,6 +67,24 @@ describe("runAgent — no model key (templates)", () => {
     expect(run.decision.level).toBe("Green")
     expect(run.advisories).toHaveLength(0)
     expect(run.steps[4].summary).toMatch(/nothing/i)
+  })
+
+  it("does not claim 'at or below 100' when every feed is down (found in an outage stress test)", async () => {
+    const snap = { ...makeSnapshot(), stations: [], series: [], adjusted: [], nowIndex: 0 }
+    const run = await runAgent(snap, { now: NOW, population: 200 })
+    expect(run.decision.dataGap).toBe(true)
+    expect(run.decision.rationale).toMatch(/cannot assess/i)
+    expect(run.decision.rationale).not.toMatch(/at or below 100/)
+    expect(run.steps[1].details.join(" ")).not.toMatch(/stays at or below 100/)
+    expect(run.advisories).toHaveLength(0)
+    expect(run.steps[4].summary).toMatch(/no data/i)
+  })
+
+  it("flags a data gap, without claiming a clear forecast, when only the forecast is missing", async () => {
+    const snap = { ...makeSnapshot({ doe: 60, base: 60, peak: 90 }), series: [], adjusted: [], nowIndex: 0 }
+    const run = await runAgent(snap, { now: NOW, population: 200 })
+    expect(run.decision.dataGap).toBe(true)
+    expect(run.decision.rationale).toMatch(/no forecast is available/i)
   })
 
   it("still works with no DOE stations (falls back to the model forecast)", async () => {
@@ -146,6 +164,15 @@ describe("llm wrapper", () => {
     expect(first.system).toContain("sys")
     expect(first.messages[0].content).toBe("usr")
     delete process.env.ANTHROPIC_MODEL
+  })
+})
+
+describe("photo observation schema", () => {
+  it("accepts a slightly off-spec reply instead of failing the whole check (seen live: 7 observations)", () => {
+    const o = ObservationSchema.parse({ hazard: "smog", visibility: "poor", observations: ["a", "b", "c", "d", "e", "f", "g"], confidence: 1.2 })
+    expect(o.observations).toHaveLength(6)
+    expect(o.hazard).toBe("other")
+    expect(o.confidence).toBe(1)
   })
 })
 

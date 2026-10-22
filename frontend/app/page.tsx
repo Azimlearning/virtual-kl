@@ -34,14 +34,20 @@ export default async function PulsePage() {
               01 · Kuala Lumpur live picture
             </p>
             <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-              Air in the city is{" "}
-              <em
-                className="font-medium italic underline decoration-[0.14em] underline-offset-[0.12em]"
-                style={{ textDecorationColor: cssColor(apiNow) }}
-              >
-                {doeCategory(apiNow).toLowerCase()}
-              </em>
-              .
+              {apiNow == null ? (
+                "Live air-quality readings are unavailable."
+              ) : (
+                <>
+                  Air in the city is{" "}
+                  <em
+                    className="font-medium italic underline decoration-[0.14em] underline-offset-[0.12em]"
+                    style={{ textDecorationColor: cssColor(apiNow) }}
+                  >
+                    {doeCategory(apiNow).toLowerCase()}
+                  </em>
+                  .
+                </>
+              )}
             </h1>
             <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
               {hottest ? (

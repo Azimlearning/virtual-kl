@@ -170,6 +170,11 @@ export function AgentConsole() {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <p className="text-sm text-muted-foreground">{run.decision.rationale}</p>
+            {run.decision.dataGap && (
+              <p className="rounded-lg border border-alert/40 bg-alert/10 p-2.5 text-xs">
+                Data gap: part of the air-quality picture is missing, so &ldquo;Green&rdquo; here does not mean &ldquo;safe&rdquo;.
+              </p>
+            )}
 
             <div className="rounded-lg bg-sim/10 p-3 text-xs leading-relaxed">
               <div className="mb-1.5 flex items-center gap-2">

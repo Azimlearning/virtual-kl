@@ -51,7 +51,7 @@ Hard rules:
 - Tailor the action to the audience.
 Output shape (exactly): {"advisories":[{"audience":"parents-schools"|"elderly-respiratory"|"outdoor-workers"|"general","en":{"headline":"","what":"","where":"","when":"","action":""},"bm":{"headline":"","what":"","where":"","when":"","action":""}}]} with one entry per audience given.`
 
-export type AgentOptions = { now?: Date; focusId?: string; population?: number }
+export type AgentOptions = { now?: Date; focusId?: string; population?: number; /** false = skip the model (rate limited) and use templates */ useLlm?: boolean }
 
 function fmtWhen(times: string[], idx: number, nowIdx: number, lang: "en" | "bm" = "en"): string | null {
   return idx >= 0 && idx < times.length ? whenLabel(times[idx], times[nowIdx] ?? times[idx], lang) : null
@@ -106,7 +106,9 @@ export async function runAgent(snapshot: Snapshot, opts: AgentOptions = {}): Pro
       ? `Already above 100 now${backBelow >= 0 ? `; forecast drops back to 100 or below around ${fmtWhen(times, backBelow, snapshot.nowIndex)}` : "; no clearing within 48 h"}.`
       : above100 >= 0
         ? `Forecast first exceeds 100 around ${fmtWhen(times, above100, snapshot.nowIndex)}.`
-        : "Forecast stays at or below 100.",
+        : forecastPeak == null
+          ? "Forecast unavailable, so whether conditions will cross 100 is unknown."
+          : "Forecast stays at or below 100.",
   )
   if (above200 >= 0) anticipate.push(`Forecast first exceeds 200 around ${fmtWhen(times, above200, snapshot.nowIndex)}.`)
   if (snapshot.rain) {
@@ -159,9 +161,16 @@ export async function runAgent(snapshot: Snapshot, opts: AgentOptions = {}): Pro
   const level: Level = maxLevel(levelFromIndex(refNow), levelFromIndex(forecastPeak))
   const autonomy = autonomyFor(level)
   const policy = policyFor(Math.max(refNow ?? 0, forecastPeak ?? 0))
-  const rationale =
-    level === "Green"
-      ? "Both the current DOE reading and the 48 h forecast are at or below 100. Nothing needs sending — doing nothing is a valid output."
+  const noData = refNow == null && forecastPeak == null
+  const dataGap = refNow == null || forecastPeak == null
+  const rationale = noData
+    ? "No air-quality data is available (the DOE feed and the model forecast are both down), so the agent cannot assess risk and sends nothing. Follow DOE and MET Malaysia directly until the feeds return."
+    : level === "Green"
+      ? refNow == null
+        ? "No DOE reading is available; the 48 h model forecast stays at or below 100. Nothing needs sending, but this rests on the model alone."
+        : forecastPeak == null
+          ? "The current DOE reading is at or below 100, but no forecast is available, so the next 48 h are unknown. Nothing to send now."
+          : "Both the current DOE reading and the 48 h forecast are at or below 100. Nothing needs sending — doing nothing is a valid output."
       : `Level ${level}: highest of current DOE API (${refNow ?? "n/a"}) and forecast peak (${forecastPeak ?? "n/a"}). ${
           autonomy === "needs-approval"
             ? "Orange and Red advisories wait for a human to approve; Red is never auto-sent."
@@ -196,6 +205,8 @@ export async function runAgent(snapshot: Snapshot, opts: AgentOptions = {}): Pro
   if (level !== "Green") {
     if (!llmConfigured()) {
       llmNote = "No ANTHROPIC_API_KEY configured: advisories are deterministic templates."
+    } else if (opts.useLlm === false) {
+      llmNote = "Too many model requests from this connection just now: advisories are deterministic templates. Try again in a minute."
     } else {
       try {
         const out = await generateJson({
@@ -272,7 +283,7 @@ export async function runAgent(snapshot: Snapshot, opts: AgentOptions = {}): Pro
     { id: "anticipate", title: "Anticipate", summary: "Act on the forecast, not the threshold crossing", details: anticipate },
     { id: "simulate", title: "Simulate", summary: `Rehearse the warning on ${pop.length.toLocaleString("en-GB")} synthetic residents (simulated)`, details: simDetails },
     { id: "decide", title: "Decide", summary: `Level ${level} · ${autonomy === "auto-send" ? "may auto-send" : "needs human approval"}`, details: decideDetails },
-    { id: "act", title: "Act", summary: level === "Green" ? "Nothing to send" : `${advisories.length} advisories drafted (EN + BM)`, details: actDetails },
+    { id: "act", title: "Act", summary: level === "Green" ? (noData ? "Nothing sent: no data" : "Nothing to send") : `${advisories.length} advisories drafted (EN + BM)`, details: actDetails },
   ]
 
   return {
@@ -280,7 +291,7 @@ export async function runAgent(snapshot: Snapshot, opts: AgentOptions = {}): Pro
     llm,
     llmNote,
     steps,
-    decision: { level, autonomy, rationale },
+    decision: { level, autonomy, rationale, ...(dataGap ? { dataGap } : {}) },
     simulation: { focusArea: focus.name, simulated: true, calibration: "illustrative", scenarios },
     advisories,
   }

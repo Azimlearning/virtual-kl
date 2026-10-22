@@ -10,10 +10,11 @@ import { nearestStation } from "./scoring"
  */
 
 export const ObservationSchema = z.object({
-  hazard: z.enum(["haze", "smoke", "flood", "fire", "other", "none"]),
-  visibility: z.enum(["good", "moderate", "poor", "very-poor", "unknown"]),
-  observations: z.array(z.string()).max(6),
-  confidence: z.number().min(0).max(1),
+  // Tolerant on purpose: a live run returned 7 observations and the strict schema turned a good answer into a 502.
+  hazard: z.enum(["haze", "smoke", "flood", "fire", "other", "none"]).catch("other"),
+  visibility: z.enum(["good", "moderate", "poor", "very-poor", "unknown"]).catch("unknown"),
+  observations: z.array(z.string()).transform((a) => a.slice(0, 6)),
+  confidence: z.number().transform((n) => Math.min(1, Math.max(0, n))).catch(0.5),
 })
 
 export const CHECK_SYSTEM = `You are an image analyst for a city safety dashboard in Kuala Lumpur.

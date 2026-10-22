@@ -16,13 +16,19 @@ export default async function TwinPage() {
           title="KL Twin sandbox"
           description="A 3D twin of Kuala Lumpur with thousands of simulated residents. Replay the real October haze or the live forecast, change when and how a warning goes out, and watch who protects themselves in time. Operators rehearse; planners compare options. Everything on this page is simulated."
         />
-        <TwinView
-          series={snap.series}
-          adjusted={snap.adjusted}
-          nowIndex={snap.nowIndex}
-          stations={snap.stations}
-          floodStations={snap.floodStations}
-        />
+        {snap.series.length === 0 ? (
+          <p className="rounded-xl border border-border bg-muted/40 p-6 text-sm text-muted-foreground">
+            The sandbox replays real haze data, and the air-quality feed (Open-Meteo / CAMS) is not responding right now. Reload in a minute; the other pages show which sources are down.
+          </p>
+        ) : (
+          <TwinView
+            series={snap.series}
+            adjusted={snap.adjusted}
+            nowIndex={snap.nowIndex}
+            stations={snap.stations}
+            floodStations={snap.floodStations}
+          />
+        )}
       </div>
     </AppShell>
   )

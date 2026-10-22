@@ -456,7 +456,19 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
           </CardHeader>
           <CardContent className="flex flex-col gap-3 text-sm">
             {!selectedResident || !selectedPersona ? (
-              <p className="text-muted-foreground">Click a dot on the map to pick a resident, then ask them why they did what they did.</p>
+              <div className="flex flex-col gap-2">
+                <p className="text-muted-foreground">Click a dot on the map to pick a resident, or pick one here, then ask them why they did what they did.</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {PERSONAS.map((p) => {
+                    const r = pop.find((x) => x.persona === p.id)
+                    return r ? (
+                      <button key={p.id} onClick={() => { setSelectedId(r.id); setAnswer(null) }} className="rounded-full border border-border px-2.5 py-1 text-xs hover:bg-muted">
+                        {p.label}
+                      </button>
+                    ) : null
+                  })}
+                </div>
+              </div>
             ) : (
               <>
                 <div className="rounded-lg bg-muted/60 p-2.5 text-xs leading-snug">

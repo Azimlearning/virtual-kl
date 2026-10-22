@@ -39,6 +39,13 @@ Rules that make this file worth keeping:
 - **Noted, not changed:** another session is restyling the frontend (fonts/theme/logo); the DOE feed's one carried-over KL reading; `lib/auth.ts` still stubs a single operator for the CISE pages.
 - **Known issues / next steps:** see STATUS "Next actions" (confirm A-15 before the first push; set a key and run the live Claude checks; deploy; survey).
 
+### 2026-10-23 — Stress test of the build and the idea
+- **Reported:** user: "stress test this project one more time to make sure the prototype is fully ready to win", then "stress test the idea itself also".
+- **Changed:** `lib/kl/agent.ts` (no-data and forecast-missing decisions say so, `dataGap` flag), `components/kl/agent-console.tsx` (data-gap note), `app/page.tsx` (headline when no reading), `app/twin/page.tsx` (guard when the series is empty), new `app/error.tsx`, `lib/kl/check.ts` (tolerant observation schema), new `lib/kl/ratelimit.ts` wired into the three model endpoints, `components/kl/kl-map.tsx` (picking radius), `components/kl/twin-view.tsx` (persona quick-pick), tests (79). New doc `refdocs/stress-test-2026-10-23.md`.
+- **Diagnosed:** an outage test with all upstream fetches blocked and a cold cache showed a false "Green"; a browser upload test showed the 502 the direct API test missed (the model returned 7 observations).
+- **Verified:** see the stress-test doc. **Not verified:** real-GPU frame rate, hosted behaviour, Bahasa Malaysia quality.
+- **Idea-level findings:** effect ≈10% and robust in ordering; lead time beyond ~1 h adds little; outdoor workers barely helped (suggested SDP site-manager lever); no resident/operator validation yet; delivery channel assumed.
+
 ### 2026-10-22 — Live Claude verification (agent, interview, photo check)
 - **Reported:** user put a real Anthropic key in `frontend/.env.local` (first attempt left the literal placeholder, which gave 401 "Invalid bearer token").
 - **Changed:** `lib/kl/agent.ts` (max tokens 1800 → 4096, schema accepts a bare advisory list as well as `{advisories: [...]}`, SYSTEM prompt states the exact output shape), `tests/agent.test.ts` (two regression tests; 73 total). STATUS, README, env guide, CLAUDE.md and PRD status lines updated.

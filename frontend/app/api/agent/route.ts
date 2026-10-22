@@ -1,4 +1,5 @@
 import { runAgent } from "@/lib/kl/agent"
+import { allowLlmCall } from "@/lib/kl/ratelimit"
 import { getSnapshot } from "@/lib/kl/snapshot"
 
 export const dynamic = "force-dynamic"
@@ -13,6 +14,6 @@ export async function POST(req: Request) {
     // empty body is fine
   }
   const snapshot = await getSnapshot()
-  const run = await runAgent(snapshot, { focusId })
+  const run = await runAgent(snapshot, { focusId, useLlm: allowLlmCall(req, "agent", 6) })
   return Response.json(run)
 }

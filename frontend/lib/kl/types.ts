@@ -178,6 +178,8 @@ export type AgentRun = {
     level: Level
     autonomy: "auto-send" | "needs-approval"
     rationale: string
+    /** True when the current reading and/or the forecast is missing, so "Green" does not mean "safe". */
+    dataGap?: boolean
   }
   simulation: {
     focusArea: string

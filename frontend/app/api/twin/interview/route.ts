@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { LlmNotConfigured, generateText, llmConfigured } from "@/lib/kl/llm"
 import { INTERVIEW_SYSTEM, explain, templateAnswer, type ResidentFacts } from "@/lib/twin/interview"
+import { allowLlmCall } from "@/lib/kl/ratelimit"
 import { PERSONA_BY_ID } from "@/lib/twin/personas"
 
 export const dynamic = "force-dynamic"
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
   const persona = PERSONA_BY_ID[b.persona]
   let source: "claude" | "template" = "template"
   let answer = templateAnswer(facts, b.question)
-  if (llmConfigured()) {
+  if (llmConfigured() && allowLlmCall(req, "interview", 20)) {
     try {
       answer = await generateText({
         system: INTERVIEW_SYSTEM,

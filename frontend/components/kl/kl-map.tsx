@@ -242,6 +242,7 @@ export function KlMapView(props: KlMapProps) {
 
     overlay.setProps({
       layers,
+      pickingRadius: 10,
       getTooltip: ({ object, layer }: { object?: unknown; layer?: { id: string } | null }) => {
         if (!object || !layer) return null
         const base = { className: "kl-tooltip" }

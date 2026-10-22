@@ -2,6 +2,7 @@ import { z } from "zod"
 import { checkPhoto } from "@/lib/kl/check"
 import { focusById } from "@/lib/kl/geo"
 import { LlmNotConfigured, llmConfigured } from "@/lib/kl/llm"
+import { allowLlmCall } from "@/lib/kl/ratelimit"
 import { getSnapshot } from "@/lib/kl/snapshot"
 
 export const dynamic = "force-dynamic"
@@ -25,6 +26,9 @@ export async function POST(req: Request) {
     body = Body.parse(await req.json())
   } catch {
     return Response.json({ error: "Expected { imageBase64, mediaType } with an image under ~3 MB." }, { status: 400 })
+  }
+  if (!allowLlmCall(req, "check", 6)) {
+    return Response.json({ error: "Too many photo checks just now. Please wait a minute and try again." }, { status: 429 })
   }
   try {
     const focus = focusById(body.focusId ?? "klcc")

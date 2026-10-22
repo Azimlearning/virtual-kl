@@ -38,7 +38,7 @@ Every environment variable, and where to get it: [`refdocs/guides/env_setup.md`]
 
 ```bash
 cd frontend && npm run dev                        # http://localhost:3000
-cd frontend && npx vitest run                     # 72 unit tests
+cd frontend && npx vitest run                     # 79 unit tests
 cd frontend && npx tsc --noEmit                   # type check
 cd frontend && npm run build && npm start         # production build
 
@@ -68,6 +68,7 @@ docker-compose.yml   db, chroma, neo4j, app, frontend (only for the optional eng
 | [`refdocs/STATUS.md`](refdocs/STATUS.md) | Where the build actually is right now |
 | [`refdocs/virtual-kl-PRD.md`](refdocs/virtual-kl-PRD.md) | Scope, architecture, roadmap, decision log |
 | [`refdocs/brainstorm-2026-10-22.md`](refdocs/brainstorm-2026-10-22.md) | The concept and the research behind it |
+| [`refdocs/stress-test-2026-10-23.md`](refdocs/stress-test-2026-10-23.md) | Stress test of the build and of the idea: what broke, what survived, what a judge will ask |
 | [`refdocs/changelog/CHANGELOG.md`](refdocs/changelog/CHANGELOG.md) | Session-by-session history |
 | [`refdocs/changelog/DECISIONS.md`](refdocs/changelog/DECISIONS.md) | Why things are the way they are |
 | [`refdocs/guides/env_setup.md`](refdocs/guides/env_setup.md) | Every environment variable and where to get it |

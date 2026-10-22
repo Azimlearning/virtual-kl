@@ -66,14 +66,17 @@ What has actually been run, not what has been written. A row here needs a real c
 | 2026-10-22 | Secret-guard hook | fake hook JSON | ✅ planted Anthropic key / Telegram token → exit 2; clean → 0; `.env` → 0; malformed → 0 |
 | 2026-10-22 | Scaffold integrity | token grep, `git check-ignore`, link and id diffs | ✅ |
 | 2026-10-22 | Frontend type check | `npx tsc --noEmit` | ✅ clean (after fixing a latent CISE error: orphaned `IngestionBar` imported a missing action; and the maplibre import) |
-| 2026-10-22 | Frontend unit tests | `npx vitest run` | ✅ **72 passed** (5 files: scoring, sources, guardrails, twin, agent/llm/check) |
+| 2026-10-22 | Frontend unit tests | `npx vitest run` | ✅ **79 passed** (6 files: scoring, sources, guardrails, twin, agent/llm/check, ratelimit) |
 | 2026-10-22 | Production build | `npm run build` (isolated `NEXT_DIST_DIR`) | ✅ 17 routes |
 | 2026-10-22 | Live endpoints (production server) | `curl` `/api/kl/snapshot`, `POST /api/agent`, `POST /api/check`, `POST /api/twin/interview` | ✅ snapshot 200 with all sources; agent 200 (Orange, 4 advisories, guardrails passed, templates); check → 503 without key (as designed); interview 200 (template) / 400 on bad body |
 | 2026-10-22 | Real-browser pass (puppeteer-core + Chrome) | all five pages | ✅ 0 console/page errors (excluding the Vercel analytics script that only exists on Vercel); map canvas 1169×560; 16–20 tiles loaded, 0 failed |
 | 2026-10-22 | Backend tests after the Anthropic swap | `pytest` in a venv with `chromadb` **stubbed** (see Known gaps) | ✅ **122 passed** (includes 2 new `test_llm_client.py`) |
+| 2026-10-23 | Stress test, build | 40 page×viewport×theme loads, hostile API inputs, 20× parallel snapshot, prompt injection, 8 real photos, simulated total data outage | ✅ after 5 fixes; see [`stress-test-2026-10-23.md`](stress-test-2026-10-23.md) |
+| 2026-10-23 | Stress test, idea | 900-draw sensitivity analysis of the twin's illustrative parameters; per-persona effects | ✅ ordering of interventions stable; ⚠ headline effect ≈10%, lead time beyond ~1 h adds little, outdoor workers barely helped (details and judge Q&A in the same doc) |
 
 ### Defects found by the batch and fixed (D-20)
 
+- (2026-10-23 stress test) Agent said "at or below 100" with no data at all; `/twin` 500 when the air-quality feed was down; photo check 502 when the model returned more than 6 observations; no limits on the endpoints that spend API credit; resident dots nearly impossible to click. All fixed; details in the stress-test doc.
 - MapLibre 6 worker not loading under Turbopack → copy worker to `public/` (D-24).
 - MapLibre's CSS overrode the container's `position`, collapsing the map to 300 px → inline positioning.
 - Replay window started inside the haze (history too short, onset not chosen) → 21 days of history, onset-based window.
