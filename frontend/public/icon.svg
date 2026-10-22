@@ -1,17 +1,19 @@
 <svg width="128" height="128" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <title>CISE - Crisis Intelligence Synthesis Engine</title>
+  <title>Virtual KL</title>
   <style>
-    .tile { fill: #d9962b; }
-    .glyph { stroke: #1a1f29; }
-    .dot { fill: #1a1f29; }
+    .tile { fill: #0e565c; }
+    .ink { fill: #f6f3ea; }
+    .ring { stroke: #f6f3ea; stroke-opacity: .55; }
     @media (prefers-color-scheme: dark) {
-      .tile { fill: #1a1f29; }
-      .glyph { stroke: #f0b94d; }
-      .dot { fill: #f0b94d; }
+      .tile { fill: #6fe0cf; }
+      .ink { fill: #10201f; }
+      .ring { stroke: #10201f; }
     }
   </style>
-  <rect class="tile" width="32" height="32" rx="7" />
-  <!-- signals (the open ring) converging on one point (the dot) -->
-  <path class="glyph" d="M23.2 11.2A9 9 0 1 0 23.2 20.8" stroke-width="3" stroke-linecap="round" />
-  <circle class="dot" cx="16" cy="16" r="3" />
+  <rect class="tile" width="32" height="32" rx="9" />
+  <!-- two towers (the city) inside a ring (the haze / watched perimeter) -->
+  <circle class="ring" cx="16" cy="16" r="9.5" stroke-width="1.5" />
+  <rect class="ink" x="11" y="9" width="4" height="15" rx="2" />
+  <rect class="ink" x="17" y="9" width="4" height="15" rx="2" />
+  <rect class="ink" x="14.5" y="16" width="3" height="1.6" />
 </svg>

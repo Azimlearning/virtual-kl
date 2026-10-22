@@ -12,14 +12,14 @@ import { BellRing, CheckCircle2, ExternalLink, Info, Mail } from "lucide-react"
 
 export default async function AlertsPage() {
   const user = await getCurrentUser()
-  if (!user) redirect("/sign-in")
+  if (!user) redirect("/")
 
   const { items, telegramConfigured, emailConfigured, emailRecipientCount, minLevel } = await getAlerts()
   const anyChannel = telegramConfigured || emailConfigured
 
   return (
     <AppShell userName={user.name || user.email || "Operator"}>
-      <div className="mx-auto flex max-w-4xl flex-col gap-5 p-4 md:p-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:px-6 md:py-10">
         <PageHeader
           title="Alerts"
           description="Orange and Red incidents that are still active, and which notification channels each one has been sent through. Sending is automatic: new alerts go out within minutes of being detected."

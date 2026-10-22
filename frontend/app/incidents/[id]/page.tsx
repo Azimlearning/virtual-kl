@@ -20,7 +20,7 @@ export default async function IncidentDetailPage({
   params: Promise<{ id: string }>
 }) {
   const user = await getCurrentUser()
-  if (!user) redirect("/sign-in")
+  if (!user) redirect("/")
 
   const { id } = await params
   // The AI brief is the slow part (a language-model call); notes are quick.

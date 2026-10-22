@@ -19,13 +19,13 @@ const ACTION_META: Record<string, { label: string; icon: typeof Activity; tone: 
 
 export default async function ActivityPage() {
   const user = await getCurrentUser()
-  if (!user) redirect("/sign-in")
+  if (!user) redirect("/")
 
   const log = await getAuditLog(60)
 
   return (
     <AppShell userName={user.name || user.email || "Operator"}>
-      <div className="mx-auto flex max-w-3xl flex-col gap-5 p-4 md:p-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:px-6 md:py-10">
         <PageHeader
           title="Activity Log"
           description="Full audit trail of automated ingestion and analyst decisions for accountability."

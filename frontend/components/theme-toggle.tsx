@@ -16,14 +16,13 @@ export function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="sm"
+      size="icon"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
-      aria-label="Toggle color theme"
+      className="cursor-pointer text-muted-foreground hover:text-foreground"
+      aria-label={mounted ? (isDark ? "Switch to daylight theme" : "Switch to night theme") : "Toggle color theme"}
     >
       {/* Render a stable icon until mounted to avoid hydration mismatch */}
-      {mounted && !isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-      {mounted ? (isDark ? "Light mode" : "Dark mode") : "Theme"}
+      {mounted && isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </Button>
   )
 }

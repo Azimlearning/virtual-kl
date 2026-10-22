@@ -51,12 +51,12 @@ class Settings(BaseSettings):
 
     knowledge_sync_interval_minutes: int = 10
 
-    # Intelligence layer (Ollama). host.docker.internal is Docker Desktop's
-    # built-in DNS name for reaching services running on the host machine
-    # from inside a container - this is how the containerized app reaches
-    # Ollama running natively on your Windows laptop (not in Docker).
-    ollama_host: str = "http://localhost:11434"
-    ollama_model: str = "llama3.1"
+    # Intelligence layer: Anthropic API (decision D-06, replaces the old local
+    # Ollama model). Server-side only; blank key = generate_completion raises a
+    # clear LlmNotConfigured error naming this variable.
+    anthropic_api_key: str = ""
+    anthropic_model: str = "claude-sonnet-5-5"
+    anthropic_model_fast: str = "claude-haiku-5-5"
     intelligence_top_k: int = 5
 
     # Alerts (Telegram). Both blank = alert delivery is skipped gracefully,

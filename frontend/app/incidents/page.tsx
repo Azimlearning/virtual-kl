@@ -13,7 +13,7 @@ export default async function IncidentsPage({
   searchParams: Promise<{ range?: string; from?: string; to?: string }>
 }) {
   const user = await getCurrentUser()
-  if (!user) redirect("/sign-in")
+  if (!user) redirect("/")
 
   const range = parseRange(await searchParams)
   const incidents = await getIncidents(range)
@@ -35,7 +35,7 @@ export default async function IncidentsPage({
 
   return (
     <AppShell userName={user.name || user.email || "Operator"}>
-      <div className="mx-auto flex max-w-5xl flex-col gap-5 p-4 md:p-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:px-6 md:py-10">
         <PageHeader
           title="All Incidents"
           description={`Every tracked incident across all sources, severities, and statuses. Showing: ${rangeLabel(range)}.`}

@@ -8,13 +8,13 @@ import { getReports } from "@/app/actions/crisis"
 
 export default async function ReportsPage() {
   const user = await getCurrentUser()
-  if (!user) redirect("/sign-in")
+  if (!user) redirect("/")
 
   const reports = await getReports()
 
   return (
     <AppShell userName={user.name || user.email || "Operator"}>
-      <div className="mx-auto flex max-w-4xl flex-col gap-5 p-4 md:p-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:px-6 md:py-10">
         <PageHeader
           title="Reports"
           description="Generate AI-written operational reports from current active incidents and review past briefings."

@@ -201,7 +201,7 @@ async def test_generate_report_stores_it_logs_it_and_lists_it(client, session_fa
 @pytest.mark.asyncio
 async def test_report_still_generated_when_the_llm_fails(client, session_factory, monkeypatch):
     async def broken(*a, **k):
-        raise RuntimeError("ollama down")
+        raise RuntimeError("llm down")
 
     monkeypatch.setattr("app.main.generate_brief", broken)
     async with session_factory() as s:

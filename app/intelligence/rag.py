@@ -46,7 +46,7 @@ def _is_alert_worthy(schema_valid: bool, grounding: float, numbers_ok: bool, dom
 async def generate_brief(query: str, n_results: int | None = None, role: str = DEFAULT_ROLE) -> dict:
     """The RAG pipeline: Retrieve (hybrid Chroma + Neo4j search) -> Augment
     (build_prompt stuffs those results into the prompt, framed for `role`)
-    -> Generate (Ollama writes a structured JSON briefing). Three
+    -> Generate (Claude writes a structured JSON briefing). Three
     independent guardrails then run on the output: grounding_score
     (word-overlap), numeric_grounding_ok (stricter, number-specific
     fact-check), and domain_constraints_ok (alert-level claims must match

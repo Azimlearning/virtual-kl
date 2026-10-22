@@ -1,27 +1,28 @@
-"""Kept as one small function (rather than scattering ollama calls around)
-so tests can monkeypatch generate_completion directly, without needing a
-real Ollama instance or a downloaded model.
+"""The single place the backend talks to an LLM (decision D-06: Anthropic API only).
 
-Ollama's Python client is synchronous under the hood, so - same pattern as
-the Chroma client - we run the actual call in a background thread via
-asyncio.to_thread rather than blocking the FastAPI event loop.
+Kept as one small function (rather than scattering SDK calls around) so tests can
+monkeypatch generate_completion directly, without a real API key or network.
+The Anthropic SDK has a native async client, so no worker thread is needed.
 """
 
-import asyncio
-
-import ollama
+import anthropic
 
 from ..config import settings
 
 
-async def generate_completion(prompt: str) -> str:
-    def _call() -> str:
-        client = ollama.Client(host=settings.ollama_host)
-        response = client.chat(
-            model=settings.ollama_model,
-            messages=[{"role": "user", "content": prompt}],
-            options={"temperature": 0.2},
-        )
-        return response["message"]["content"]
+class LlmNotConfigured(RuntimeError):
+    """Raised when ANTHROPIC_API_KEY is missing, naming the variable so the fix is obvious."""
 
-    return await asyncio.to_thread(_call)
+
+async def generate_completion(prompt: str) -> str:
+    if not settings.anthropic_api_key:
+        raise LlmNotConfigured(
+            "ANTHROPIC_API_KEY is not set. Add it to .env (see refdocs/guides/env_setup.md)."
+        )
+    client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key, timeout=60.0, max_retries=1)
+    response = await client.messages.create(
+        model=settings.anthropic_model,
+        max_tokens=1500,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return "".join(block.text for block in response.content if getattr(block, "type", None) == "text")

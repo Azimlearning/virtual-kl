@@ -153,7 +153,7 @@ async def send_telegram(text: str) -> None:
 
 def _send_email_sync(subject: str, body: str) -> None:
     """Blocking SMTP send (smtplib is a synchronous library), so callers run
-    it in a worker thread - same reasoning as the Chroma and Ollama clients."""
+    it in a worker thread - same reasoning as the Chroma client."""
     message = EmailMessage()
     message["From"] = settings.smtp_from or settings.smtp_user
     message["To"] = ", ".join(email_recipients())

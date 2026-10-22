@@ -1,24 +1,23 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Fraunces, Instrument_Sans, JetBrains_Mono } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
+// Display serif for headlines and big numerals, a humanist sans for body, mono for data labels.
+const fraunces = Fraunces({ variable: '--font-fraunces', subsets: ['latin'], axes: ['opsz'] })
+const instrument = Instrument_Sans({ variable: '--font-instrument', subsets: ['latin'] })
+const jetbrains = JetBrains_Mono({ variable: '--font-jetbrains', subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
-    default: 'CISE — Crisis Intelligence Synthesis Engine',
-    template: '%s · CISE',
+    default: 'Virtual KL — township resilience hub',
+    template: '%s · Virtual KL',
   },
-  applicationName: 'CISE',
+  applicationName: 'Virtual KL',
   description:
-    'CISE (Crisis Intelligence Synthesis Engine) fuses live hazard, weather and news signals into prioritised, AI-assisted incident assessments with human review.',
+    'Virtual KL fuses live haze, weather and incident data for Kuala Lumpur, anticipates trouble with a proactive AI agent, and lets operators rehearse warnings on a 3D digital twin with simulated residents. Built on CISE for the Sime Darby Property University Hackathon 2026.',
   icons: {
     icon: [
       {
@@ -41,8 +40,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f4f5f7' },
-    { media: '(prefers-color-scheme: dark)', color: '#1a1f29' },
+    { media: '(prefers-color-scheme: light)', color: '#f6f3ea' },
+    { media: '(prefers-color-scheme: dark)', color: '#10201f' },
   ],
 }
 
@@ -55,7 +54,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} bg-background`}
+      className={`${fraunces.variable} ${instrument.variable} ${jetbrains.variable} bg-background`}
     >
       <body className="font-sans antialiased">
         <ThemeProvider>

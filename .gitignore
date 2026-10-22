@@ -39,3 +39,31 @@ Thumbs.db
 
 # --- Old Streamlit dashboard (retired) ---
 dashboard/
+
+# --- Added by /newproject (2026-10-22) ---
+# More secrets
+*.pem
+*.key
+# Per-machine Claude Code settings (.claude/settings.json IS committed)
+.claude/settings.local.json
+# OS / editor / scratch
+desktop.ini
+*.swp
+tmp/
+scratch/
+*.log
+# Build output and caches
+coverage/
+.turbo/
+.vercel/
+# Large data and model files (e.g. the 667 MB Groundsource parquet, model checkpoints).
+# Small derived fixtures may be committed deliberately - put them outside data/raw/.
+data/raw/
+*.parquet
+*.ckpt
+*.pt
+*.onnx
+
+# MapLibre worker copied at build time (frontend/scripts/copy-maplibre-worker.mjs)
+frontend/public/maplibre/
+.next-*/
