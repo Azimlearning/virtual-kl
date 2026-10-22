@@ -4,22 +4,6 @@ This replaces `main.py` / `main_expand.py`'s single-file prototype with a
 structured service that actually persists data, matching the report's
 "historical repository (PostgreSQL)" requirement.
 
-## What changed vs. the prototype
-
-- **Persistence.** Data lives in Postgres (or SQLite for tests), not an
-  in-memory dict. A restart no longer wipes your history.
-- **Bug fixes.** GDELT ids are now stable hashes (no more overwritten/colliding
-  rows), unrest events are geocoded to a country centroid instead of pinned
-  at (0, 0), `flood/heavy_rain` split into clean `heavy_rain` / `extreme_temp`
-  types.
-- **Retry logic.** Every external API call gets exponential-backoff retry via
-  `tenacity` instead of a bare try/except.
-- **Async everywhere.** `httpx.AsyncClient` + `AsyncIOScheduler` instead of
-  blocking `requests` inside a thread-based scheduler.
-- **Config via environment.** No hardcoded URLs/intervals — see `.env.example`.
-- **Tests.** `pytest` + `respx` (HTTP mocking) + in-memory SQLite, so you can
-  run the whole suite offline with zero external dependencies.
-
 ## Run it locally (fastest path: Docker Compose)
 
 ```bash
