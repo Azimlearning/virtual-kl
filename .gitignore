@@ -1,0 +1,41 @@
+# --- Secrets: NEVER commit these (tokens, passwords, API keys) ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# --- Node / Next.js (frontend) ---
+node_modules/
+.next/
+out/
+frontend/.env*
+!frontend/.env.example
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+
+# --- Local data and databases ---
+*.sqlite
+*.sqlite3
+*.db
+chroma_data/
+neo4j_data/
+pgdata/
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Old Streamlit dashboard (retired) ---
+dashboard/
