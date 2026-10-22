@@ -30,15 +30,16 @@ const MessageSchema = z.object({
   when: z.string(),
   action: z.string(),
 })
-const ModelOutputSchema = z.object({
-  advisories: z.array(
-    z.object({
-      audience: z.enum(["parents-schools", "elderly-respiratory", "outdoor-workers", "general"]),
-      en: MessageSchema,
-      bm: MessageSchema,
-    }),
-  ),
+const AdvisorySchema = z.object({
+  audience: z.enum(["parents-schools", "elderly-respiratory", "outdoor-workers", "general"]),
+  en: MessageSchema,
+  bm: MessageSchema,
 })
+// The model sometimes returns the bare list instead of {"advisories": [...]}; accept both.
+const ModelOutputSchema = z.union([
+  z.object({ advisories: z.array(AdvisorySchema) }),
+  z.array(AdvisorySchema).transform((advisories) => ({ advisories })),
+])
 
 const SYSTEM = `You write short public-safety advisories for residents of Kuala Lumpur during a haze event.
 Hard rules:
@@ -47,7 +48,8 @@ Hard rules:
 - Do not state an alert level (Red/Orange) higher than the "level" in the facts.
 - Every advisory must be complete: headline, what (what is happening), where, when (how long / peak), action (what to do now).
 - Each field is one short sentence (under 25 words). Plain language. Write natural Bahasa Malaysia for "bm".
-- Tailor the action to the audience.`
+- Tailor the action to the audience.
+Output shape (exactly): {"advisories":[{"audience":"parents-schools"|"elderly-respiratory"|"outdoor-workers"|"general","en":{"headline":"","what":"","where":"","when":"","action":""},"bm":{"headline":"","what":"","where":"","when":"","action":""}}]} with one entry per audience given.`
 
 export type AgentOptions = { now?: Date; focusId?: string; population?: number }
 
@@ -212,6 +214,8 @@ export async function runAgent(snapshot: Snapshot, opts: AgentOptions = {}): Pro
             audiences: AUDIENCES,
           }),
           schema: ModelOutputSchema,
+          // 4 audiences x 2 languages x 5 fields overflows the default limit and truncates the JSON mid-array.
+          maxTokens: 4096,
         })
         modelMessages = out.advisories
         llm = "claude"

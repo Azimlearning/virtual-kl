@@ -50,7 +50,7 @@ Reusing code or assets from online sources is allowed (D-12). Every reused file 
 - **Free data tiers + the Anthropic API only.** No paid API, hosting, or database without a new ADR (D-07).
 - **Kuala Lumpur only.** The whole Federal Territory is the unit; SDP's KL East, Melawati and KLGCC are featured focus areas. No nationwide twin; expansion is roadmap (D-04).
 - **AI text never reaches a person unchecked.** Anything an LLM writes for a resident, an advisory, or sandbox narration passes `frontend/lib/kl/guardrails.ts` first (CISE's `app/intelligence/guardrails.py` for the engine). Orange-and-above actions need a human approval; Red is never auto-sent (D-08).
-- **No key means labelled templates, never fake AI.** Fallbacks carry `source: "template"`; vision returns 503 without a key (D-25). No live Claude call has been verified yet.
+- **No key means labelled templates, never fake AI.** Fallbacks carry `source: "template"`; vision returns 503 without a key (D-25). Live calls (agent, interview, photo check) were verified once on 2026-10-22; see STATUS.
 - **Simulated means labelled.** Synthetic residents, sandbox outcomes and interviews carry `simulated: true` and a visible label; persona parameters are illustrative until the survey runs (D-10, D-23). Flooding is not simulated; the JPS feed is frozen and never used for decisions (D-22). Never invent a link, a reading, or a resident quote.
 - **No personal data in the repo.** Team chat screenshots and contact details live in `../context/` and stay there (D-16). Resident data is opt-in and minimal.
 

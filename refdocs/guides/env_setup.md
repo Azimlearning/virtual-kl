@@ -11,7 +11,7 @@ Last updated: 2026-10-22 (MVP)
 
 | Variable | Required | Where to get it | Read by | Notes |
 |---|---|---|---|---|
-| `ANTHROPIC_API_KEY` | For live Claude text and the photo check (the demo runs without it, on labelled templates) | Anthropic Console → API Keys: https://console.anthropic.com/settings/keys | **Demo app:** `frontend/lib/kl/llm.ts` (set in `frontend/.env.local`, or Vercel Environment Variables). **CISE engine:** `app/config.py` → `app/intelligence/llm_client.py` (`.env`) | Server-side only. Never prefix with `NEXT_PUBLIC_`. **No live call has been verified yet.** |
+| `ANTHROPIC_API_KEY` | For live Claude text and the photo check (the demo runs without it, on labelled templates) | Anthropic Console → API Keys: https://console.anthropic.com/settings/keys | **Demo app:** `frontend/lib/kl/llm.ts` (set in `frontend/.env.local`, or Vercel Environment Variables). **CISE engine:** `app/config.py` → `app/intelligence/llm_client.py` (`.env`) | Server-side only. Never prefix with `NEXT_PUBLIC_`. Live calls verified 2026-10-22 with `claude-sonnet-5-5`. |
 | `DATABASE_URL` | Only for the CISE engine | Local: the default in `.env.example` (Docker Compose sets its own inside the stack). Hosted: Supabase https://supabase.com or Neon https://neon.tech connection string, `postgresql+asyncpg://` scheme | `app/config.py`, `app/database.py` | Tests use in-memory SQLite and don't need it, but importing `app.database` builds an asyncpg engine — `asyncpg` must be installed |
 
 ## Optional variables

@@ -100,7 +100,7 @@ CISE engine (app/: FastAPI + Postgres + Chroma + Neo4j) — kept in the repo, no
 
 ## 4. Modules / Feature Areas
 
-Status as of 2026-10-22. "Built" means implemented **and** covered by the verification batch (STATUS ledger); live Claude output is the exception (D-25).
+Status as of 2026-10-22. "Built" means implemented **and** covered by the verification batch (STATUS ledger); live Claude output was spot-checked once on 2026-10-22, not evaluated (D-25).
 
 ### M1 — KL Pulse — **built**
 - Real DOE readings (Batu Muda, Cheras) with age; MET 7-day KL forecast and warnings; WeatherNext 2 rain probability; 48 h forecast chart (model + bias-adjusted, MOE thresholds drawn); JPS stations as a labelled stale layer; 3D map with DOE columns, SDP focus rings, haze veil, slow flyover.
@@ -145,7 +145,7 @@ Explicitly out of scope. Revisit only by adding an ADR that says why.
 
 | Phase | Scope | Exit criteria |
 |---|---|---|
-| **MVP prototype — built 2026-10-22 (current submission)** | Foundation fixes; KL Pulse; proactive agent; KL Twin sandbox; photo check; methods page; Anthropic client in both apps | Verified: `tsc` clean, 72 unit tests, production build, live endpoints, real-browser check of all pages, backend pytest 122 pass. **Open:** live Claude output, hosted demo link (D-21), survey calibration |
+| **MVP prototype — built 2026-10-22 (current submission)** | Foundation fixes; KL Pulse; proactive agent; KL Twin sandbox; photo check; methods page; Anthropic client in both apps | Verified: `tsc` clean, 72 unit tests, production build, live endpoints, real-browser check of all pages, backend pytest 122 pass. **Open:** hosted demo link (D-21), survey calibration; live Claude spot-checked 2026-10-22 |
 | P1 Data depth | Chronos forecasts with a backtest against persistence; more KL sources; JPS re-check; data archive for future models | Backtest numbers recorded in STATUS |
 | P2 Delivery & memory | Real alert delivery (Telegram/email via CISE), persistence for the approval queue, Groundsource flood memory, news digestion | An approved advisory is actually delivered and logged |
 | P3 Calibration & evidence | Run the resident survey; replace illustrative persona parameters; replay evidence for the pitch | Persona parameters cite the survey; calibration label updated |
@@ -194,7 +194,7 @@ Unresolved. Anything marked `ASSUMED:` is a working assumption, not a confirmed 
 
 - **A-01** ASSUMED: SDP's "Melawati" belongs in the KL focus set. The briefing deck [s8] lists it under Kuala Lumpur; SDP's annual report lists "Melawati, Ampang Jaya" (Selangor). The map uses OSM's Desa Melawati (KL) as an approximate point.
 - **A-02** ASSUMED: KL East is the hero development (default focus of the twin and the agent rehearsal).
-- **A-05** ASSUMED: model ids `claude-sonnet-5-5` / `claude-haiku-5-5`. No API key exists in this environment, so no live model call has been made.
+- **A-05** VERIFIED (2026-10-22): `claude-sonnet-5-5` works for agent text, interview and vision with a real key. `claude-haiku-5-5` is still unexercised.
 - **A-06** ASSUMED: Haze Monitor's free third-party API stays available (verified 2026-10-22: 68 stations, 2 in KL).
 - **A-08** ASSUMED: the team can run the anonymous resident survey.
 - **A-10** ASSUMED: non-commercial free tiers (Open-Meteo, GNews) are acceptable for the hackathon.

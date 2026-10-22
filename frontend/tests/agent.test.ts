@@ -87,6 +87,15 @@ describe("runAgent — with a (fake) model", () => {
     expect(run.llm).toBe("claude")
     expect(run.advisories.every((a) => a.source === "claude" && a.guardrails.passed)).toBe(true)
     expect(client.calls).toHaveLength(1)
+    // regression: a live run truncated the JSON at the default 1800-token limit
+    expect((client.calls[0] as { max_tokens: number }).max_tokens).toBeGreaterThanOrEqual(3000)
+  })
+
+  it("accepts a bare list of advisories as well as the wrapped object (seen in a live run)", async () => {
+    setLlmClientForTests(fakeClient(audiences.map((a) => ({ audience: a, en: msg("Air quality is Unhealthy (API 155)"), bm: msg("Kualiti udara Tidak sihat (API 155)") }))))
+    const run = await runAgent(snap(), { now: NOW, population: 300 })
+    expect(run.llm).toBe("claude")
+    expect(run.advisories.every((a) => a.source === "claude")).toBe(true)
   })
 
   it("replaces an advisory that invents a number, and says so", async () => {

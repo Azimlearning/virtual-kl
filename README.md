@@ -2,7 +2,7 @@
 
 A township resilience hub for Sime Darby Property's Kuala Lumpur developments: live haze, weather, flood and incident intelligence per development, a proactive AI agent that warns residents before conditions cross safety thresholds, and a **KL Twin sandbox** — a 3D digital twin with a synthetic resident population — where township operators rehearse warnings and SDP planners test what-ifs.
 
-**Status:** MVP prototype built and verified locally on 2026-10-22 (live Kuala Lumpur data, 3D map, proactive agent, simulation sandbox, photo check). Not yet deployed; no live Claude call has been verified. See [`refdocs/STATUS.md`](refdocs/STATUS.md).
+**Status:** MVP prototype built and verified locally on 2026-10-22 (live Kuala Lumpur data, 3D map, proactive agent, simulation sandbox, photo check). Live Claude calls (agent, interview, photo check) verified on 2026-10-22. Not yet deployed. See [`refdocs/STATUS.md`](refdocs/STATUS.md).
 
 Entry for the **Sime Darby Property University Hackathon 2026** — track: People → Safety & Security.
 

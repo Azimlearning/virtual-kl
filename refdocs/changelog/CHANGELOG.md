@@ -39,6 +39,12 @@ Rules that make this file worth keeping:
 - **Noted, not changed:** another session is restyling the frontend (fonts/theme/logo); the DOE feed's one carried-over KL reading; `lib/auth.ts` still stubs a single operator for the CISE pages.
 - **Known issues / next steps:** see STATUS "Next actions" (confirm A-15 before the first push; set a key and run the live Claude checks; deploy; survey).
 
+### 2026-10-22 — Live Claude verification (agent, interview, photo check)
+- **Reported:** user put a real Anthropic key in `frontend/.env.local` (first attempt left the literal placeholder, which gave 401 "Invalid bearer token").
+- **Changed:** `lib/kl/agent.ts` (max tokens 1800 → 4096, schema accepts a bare advisory list as well as `{advisories: [...]}`, SYSTEM prompt states the exact output shape), `tests/agent.test.ts` (two regression tests; 73 total). STATUS, README, env guide, CLAUDE.md and PRD status lines updated.
+- **Diagnosed:** the first live agent run failed JSON parsing because the reply was cut off at the token limit; the second because the model returned a top-level array. Neither could appear with the fake client.
+- **Verified:** `/api/agent` 200 in about 15 s, `llm: claude`, 4 advisories, guardrails all true, Orange needs-approval; `/api/twin/interview` `source: claude`; `/api/check` on a Wikimedia Commons hazy KL photo: haze/poor/0.88 → corroborated (Cheras API 114, 5.8 km); on a clear skyline: none/good → unverified. **Not verified:** output quality at scale, Bahasa Malaysia fluency by a native reader, flood/fire photos.
+
 ### 2026-10-22 — Research: predictive models & algorithms for a competitive edge
 - **Changed:** Added `refdocs/research-predictive-models-2026-10-22.md` (14 ranked candidates, core five detailed, sources). No code, PRD or plan changed.
 - **Decided:** nothing — candidates only; the brainstorm is still open, so no ADRs were written.

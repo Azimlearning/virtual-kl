@@ -4,7 +4,7 @@
 
 **Build philosophy:** Build the whole slice, then verify it in one batch (D-20). Status never rounds up: "built" means it ran and was checked.
 
-**Right now:** The **MVP prototype is built and verified locally** (2026-10-22): five pages (KL Pulse, Proactive agent, KL Twin sandbox, Photo check, Methods & limits), live Kuala Lumpur data, a 3D map, a seeded population simulation, guardrails, and the Anthropic client in both apps. **Not done:** (1) any live Claude call, because no `ANTHROPIC_API_KEY` exists in this environment (all model paths ran against a fake client and the template fallback); (2) a hosted demo link (D-21, needs the team's Vercel login); (3) the first `git push` (A-15, publishing Lisa's FYP code and history). The next step is in "Next actions" below.
+**Right now:** The **MVP prototype is built and verified locally** (2026-10-22): five pages (KL Pulse, Proactive agent, KL Twin sandbox, Photo check, Methods & limits), live Kuala Lumpur data, a 3D map, a seeded population simulation, guardrails, and the Anthropic client in both apps. **Live Claude verified 2026-10-22** (agent advisories, resident interview, photo check; see Known gaps for what that does and doesn't cover). **Not done:** (1) a hosted demo link (D-21, needs the team's Vercel login); (2) the survey that calibrates the personas. The next step is in "Next actions" below.
 
 ---
 
@@ -87,7 +87,7 @@ What has actually been run, not what has been written. A row here needs a real c
 
 ## Known gaps
 
-- **No live Claude call has ever run** (no key here). Unverified: model advisories passing the guardrails, interview quality, vision output and the real shape of a model reply. The code path is covered by a fake client and a retry-on-bad-JSON test.
+- **Live Claude calls were verified once, on 2026-10-22** (`claude-sonnet-5-5`): `/api/agent` returned 4 Claude-written bilingual advisories that passed all guardrails (about 15 s); `/api/twin/interview` answered in character; `/api/check` read a hazy KL photo as poor visibility and corroborated it against Cheras DOE (API 114), and returned `unverified` for a clear photo. That is a handful of runs, not an evaluation: advisory quality, Bahasa Malaysia fluency and vision accuracy across photos are unmeasured. The first live run exposed two defects the fake client could not (output truncated at 1800 tokens; the model sometimes returns a bare list instead of `{advisories: [...]}`); both are fixed and covered by tests.
 - **Backend tests ran with a stub for `chromadb`.** `chroma-hnswlib` can't build on Python 3.13/Windows and Docker isn't installed here, so the 122 passing tests exercise everything except a real Chroma server. Run the suite on Python 3.12 or in Docker to remove this caveat.
 - **No forecast backtest exists.** The bias-adjusted forecast is a heuristic (D-19); only one day of agreement (156 vs 155) is recorded.
 - **Persona parameters are illustrative** (D-23); the survey hasn't run.
