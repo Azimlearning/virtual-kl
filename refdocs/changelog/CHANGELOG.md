@@ -39,6 +39,12 @@ Rules that make this file worth keeping:
 - **Noted, not changed:** another session is restyling the frontend (fonts/theme/logo); the DOE feed's one carried-over KL reading; `lib/auth.ts` still stubs a single operator for the CISE pages.
 - **Known issues / next steps:** see STATUS "Next actions" (confirm A-15 before the first push; set a key and run the live Claude checks; deploy; survey).
 
+### 2026-10-23 — Site-manager lever, survey ownership, pitch notes
+- **Reported:** user: "sure, add a site manager option" (then: "if it's a feature that will help us win, build it"); "not sure who runs the survey, you decide"; "take note on the key points of this project, it's important for slides and video"; wants it hosted on Vercel from the virtual-kl GitHub repo.
+- **Changed:** twin engine (`siteAction`, `SITE_COMPLIANCE`, `SITE_PROTECT`, `siteHour`, `siteManagedPct`), two presets + a custom toggle, agent rehearsal, resident interview (site-managed facts), 5 tests (84), interview/vision token limits, D-27, survey ownership and operator interviews in `guides/resident-survey.md`, new `refdocs/pitch-notes.md`, memory pointer.
+- **Decided:** D-27. Survey: Lisa and Bubu run the resident form; Azim and Chan do 2–3 operator interviews (two of whose questions replace the two new assumed parameters); Harry tallies and drafts the evidence slide.
+- **Verified:** unit tests, production build, browser pass (radio options, metrics, persona table, interview). **Not verified:** the survey and interviews themselves; hosted deployment (see next entry if done).
+
 ### 2026-10-23 — Stress test of the build and the idea
 - **Reported:** user: "stress test this project one more time to make sure the prototype is fully ready to win", then "stress test the idea itself also".
 - **Changed:** `lib/kl/agent.ts` (no-data and forecast-missing decisions say so, `dataGap` flag), `components/kl/agent-console.tsx` (data-gap note), `app/page.tsx` (headline when no reading), `app/twin/page.tsx` (guard when the series is empty), new `app/error.tsx`, `lib/kl/check.ts` (tolerant observation schema), new `lib/kl/ratelimit.ts` wired into the three model endpoints, `components/kl/kl-map.tsx` (picking radius), `components/kl/twin-view.tsx` (persona quick-pick), tests (79). New doc `refdocs/stress-test-2026-10-23.md`.

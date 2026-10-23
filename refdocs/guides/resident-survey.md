@@ -6,6 +6,31 @@ Last updated: 2026-10-22
 
 ---
 
+## Who runs it (decision, 2026-10-23)
+
+Split by who has reach, so the developer is not the bottleneck:
+
+| Who | Does | Target |
+|---|---|---|
+| **Lisa and Nur Farah ("Bubu")** | Build the Google Form from the questions below and share it in the networks they belong to: residents' and neighbourhood groups in KL East / Melawati / KLGCC if they are members, family, university and college groups in KL | 30+ responses, 3 minutes each; record the real count |
+| **Azim and Por Jie Hao ("Chan")** | Two or three **operator interviews** (below), 15 minutes each, in person or by call | 2 minimum |
+| **Harry** | Tallies the form export into the aggregate table (`../context/survey/` stays outside the repo) and drafts the one evidence slide | one slide |
+
+Azim stays on the build and the demo video; the Form takes about 30 minutes to set up and the interviews are the part that matters most.
+
+## Operator interviews (2 or 3, 15 minutes)
+
+Who: a property or community manager (a condo or township management office), a site or safety officer from a construction site (ideally an SDP contractor), a school or kindergarten administrator.
+
+1. In the last haze, how did you find out, and what did you actually do? Who did you tell?
+2. Which channel do you trust and use to reach residents, staff or parents? (WhatsApp group, notice board, SMS, app)
+3. **When air quality passed API 100, can you change work or activities on the day? What would you change, and how many sites or crews would do it if told?** (This replaces the assumed `SITE_COMPLIANCE` 0.6.)
+4. **What does a work-rest cycle, rescheduling or an indoor break cut in real exposure hours?** (This replaces the assumed `SITE_PROTECT` 0.4.)
+5. How early do you need a warning to act, and what makes you ignore one?
+6. Would you use a tool where you can rehearse the warning before sending it? What would you need to trust it?
+
+Record: role, area, date, and the answers in a few lines each (no names). Quotes go on the slide only with permission.
+
 ## Ground rules
 
 - **Anonymous.** No names, phone numbers, emails, IC numbers or exact addresses. Ask for the *area* only (e.g. "KL East", "Melawati", "other KL", "outside KL").

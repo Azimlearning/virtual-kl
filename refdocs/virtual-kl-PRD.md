@@ -185,6 +185,7 @@ Canonical one-line list. Load-bearing entries are expanded as ADRs in `changelog
 | D-24 | 3D = MapLibre 6 + deck.gl over OpenFreeMap; worker file copied at build; dark-mode filter; Pulse flyover | Verified in a real browser; free, no key |
 | D-25 | No API key means labelled templates (vision returns 503), never fake AI | Honesty; no key in the build environment |
 | D-26 | Verification builds use `NEXT_DIST_DIR=.next-verify` | A concurrent `next dev` clobbers `.next` |
+| D-27 | Site-manager action is a lever in the sandbox | Outdoor workers are the most exposed and least helped by warnings; SDP's own sites are those workers |
 
 ---
 

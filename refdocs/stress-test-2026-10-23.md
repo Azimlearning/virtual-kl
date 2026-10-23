@@ -46,7 +46,7 @@ Perturbing every illustrative parameter (delivery, ambient awareness, message ef
 3. **In live mode today the lead-time lever does nothing**, because the haze is already above 100 at hour 0. The UI handles this ("sent now"), but the sandbox can only show the proactive story in a replay. Demo the replay.
 4. **The most exposed group is the least helped.** Outdoor workers: 8.8 h exposed (2× the average), only **3% less** with the best warning, because they cannot easily stop working. Warnings fix individuals who *can* act; they don't fix exposure that is set by employers.
 
-### The opening this gives SDP (suggestion, not built)
+### The opening this gives SDP (built the same day as D-27)
 
 Finding 4 points at something SDP controls. SDP is a developer: its own construction sites and contractors are the outdoor workers, and its sustainability report cites a 0.26% lost-time injury rate and 983 employees trained in health and safety. A sandbox lever for it ("notify site managers: work-rest cycle / move outdoor tasks when API > 100") would let the twin show: *warnings alone leave outdoor workers exposed; an employer-side action does what a warning cannot.* This turns "a haze alert app" (which DOE and MET already provide) into something a township operator can act on. The effect size would be an assumption like the rest, so label it so.
 

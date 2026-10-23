@@ -11,6 +11,8 @@ export type ResidentFacts = {
   exposureHours: number
   intervention: string
   message: "generic" | "complete" | "none"
+  /** A site manager changed this resident's outdoor work (rescheduled heavy tasks, added rest breaks). */
+  siteManaged?: boolean
 }
 
 const CHANNEL_WORDS: Record<ChannelId, string> = {
@@ -28,6 +30,7 @@ export function explain(f: ResidentFacts): string[] {
   if (f.informedHoursBeforeEvent != null) {
     r.push(f.acted ? "decided to change plans" : f.message === "generic" ? "did not act: the message didn't say what to do" : "did not act")
   }
+  if (f.siteManaged) r.push("your site manager, who was notified, rescheduled heavy outdoor work and added rest breaks for the crew")
   r.push(`usually hears things via ${CHANNEL_WORDS[f.channel]}`)
   return r
 }
@@ -40,6 +43,9 @@ Begin the answer with nothing else (no labels).`
 export function templateAnswer(f: ResidentFacts, question: string): string {
   const p = PERSONA_BY_ID[f.persona]
   const via = CHANNEL_WORDS[f.channel]
+  if (f.siteManaged) {
+    return `Our site manager got the alert and moved the heavy work to cooler, cleaner hours and gave us more rest breaks, so I didn't have to decide on my own. (Simulated ${p.label.toLowerCase()} · template answer to: "${question}")`
+  }
   if (f.informedHoursBeforeEvent == null) {
     return `Honestly, I didn't hear anything. I'm mostly on ${via}, and nothing reached me, so I carried on as usual. (Simulated ${p.label.toLowerCase()} · template answer to: "${question}")`
   }

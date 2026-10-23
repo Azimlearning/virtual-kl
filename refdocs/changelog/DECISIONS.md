@@ -146,6 +146,12 @@ An ADR is worth writing when the decision (a) is expensive to reverse, (b) will 
 - **Why:** Other sessions run `next dev` in the same `frontend/` folder; a dev server and a production build share `.next` and clobbered each other ("Cannot find module for page: /twin").
 - **Trade-offs / rejected:** Stopping other sessions' dev servers.
 
+### D-27 — Site-manager action is a first-class lever in the sandbox (2026-10-23)
+- **Decision:** An intervention may also notify site managers / employers (`siteAction`). In the twin, a share of outdoor-worker crews (`SITE_COMPLIANCE` 0.6) have heavy outdoor work rescheduled and work-rest cycles added one hour after the notification, cutting their residual exposure to `SITE_PROTECT` 0.4. Two presets (site-manager action only; complete 6 h advisory + site-manager action), a custom toggle, the agent's rehearsal and the resident interview all know about it.
+- **Why:** The stress test (`refdocs/stress-test-2026-10-23.md`) found outdoor workers are the most exposed group (8.8 h) and the least helped by a resident warning (3%). SDP is a developer, so its construction sites and contractors are exactly those workers and a lever SDP itself controls. It is also what separates Virtual KL from the national alert channels (APIMS, NADMA SMS, planned cell broadcast), which cannot tell a site manager to reschedule work.
+- **Result (replay, KL East, illustrative parameters):** outdoor-worker exposure −30% with site action alone vs −3% with a warning alone; −35% combined. Whole population: −6.2% site-only, −10.1% warning, −16.7% both. Across compliance 0.3–0.9 and protection 0.25–0.6 the worker gain ranges 12–68%, always above the warning-only 3%, so the direction is robust and the size is not.
+- **Trade-offs / rejected:** The two parameters are assumptions like every persona parameter (D-23) and are labelled that way; the operator interviews in the survey guide exist to replace them. Rejected: modelling employers individually (no data).
+
 ---
 
 ## Working assumptions (`ASSUMED:`)
@@ -154,7 +160,7 @@ Not decisions — guesses made to keep moving. Each one must be confirmed or kil
 
 - **A-01** ASSUMED: SDP's "Melawati" belongs in the KL focus set. The briefing deck [s8] lists it under Kuala Lumpur; SDP's annual report lists "Melawati, Ampang Jaya" (Selangor). The map uses OSM's Desa Melawati (KL) as an approximate point.
 - **A-02** ASSUMED: KL East is the hero development (default focus of the twin and the agent rehearsal).
-- **A-05** ASSUMED: model ids `claude-sonnet-5-5` / `claude-haiku-5-5`. **No API key exists in this environment**, so no live model call has been made; only the SDK/vision request shape was confirmed from the docs.
+- **A-05** VERIFIED 2026-10-22: `claude-sonnet-5-5` works for agent text, interview and vision with a real key. `claude-haiku-5-5` is still unexercised.
 - **A-06** ASSUMED: Haze Monitor's free third-party API stays available. Verified on 2026-10-22: 68 DOE stations, 2 in Kuala Lumpur; one carried over from the previous hour at times.
 - **A-08** ASSUMED: the team can run the anonymous resident survey.
 - **A-10** ASSUMED: non-commercial free tiers (Open-Meteo, GNews) are acceptable for the hackathon; a paid pilot needs paid plans.

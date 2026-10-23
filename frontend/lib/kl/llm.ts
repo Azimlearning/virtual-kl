@@ -110,7 +110,7 @@ export async function describeImage<T>(opts: {
 }): Promise<T> {
   const res = await client().messages.create({
     model: modelName(),
-    max_tokens: 800,
+    max_tokens: 1500,
     system: opts.system + "\nReply with a single JSON object and nothing else.",
     messages: [
       {

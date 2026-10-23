@@ -214,3 +214,45 @@ describe("positionsAt (map animation)", () => {
     }
   })
 })
+
+describe("site-manager action (D-27)", () => {
+  const pop = generatePopulation(focus, 3000, 99)
+  const win = eventWindow()
+  const get = (id: string) => PRESET_INTERVENTIONS.find((i) => i.id === id)!
+  const [base, site, both, warn] = compare(pop, win, [get("baseline"), get("site-only"), get("complete-6h-site"), get("complete-6h")], 5)
+  const worker = (r: typeof base) => r.summary.byPersona.find((p) => p.persona === "outdoor-worker")!
+
+  it("cuts outdoor workers' exposure a lot more than a resident warning alone does", () => {
+    expect(worker(site).meanExposureHours).toBeLessThan(worker(warn).meanExposureHours)
+    expect(worker(site).meanExposureHours).toBeLessThan(worker(base).meanExposureHours)
+    expect(worker(both).meanExposureHours).toBeLessThanOrEqual(worker(site).meanExposureHours + 1e-9)
+  })
+
+  it("leaves everyone else untouched when used alone", () => {
+    for (const p of PERSONAS.filter((x) => x.id !== "outdoor-worker")) {
+      const a = base.summary.byPersona.find((x) => x.persona === p.id)!
+      const b = site.summary.byPersona.find((x) => x.persona === p.id)!
+      expect(b.meanExposureHours).toBeCloseTo(a.meanExposureHours, 9)
+    }
+  })
+
+  it("only ever manages outdoor workers, and only a share of them", () => {
+    const workerShare = pop.filter((r) => r.persona === "outdoor-worker").length / pop.length
+    expect(site.summary.siteManagedPct / 100).toBeGreaterThan(0)
+    expect(site.summary.siteManagedPct / 100).toBeLessThan(workerShare)
+    pop.forEach((r, i) => { if (site.outcome.siteHour[i] >= 0) expect(r.persona).toBe("outdoor-worker") })
+    expect(base.summary.siteManagedPct).toBe(0)
+  })
+
+  it("does nothing when no hour exceeds 100", () => {
+    const s = makeSnapshot({ base: 60, peak: 90 })
+    const calm = makeWindow(s.series.map((p) => p.t), s.adjusted, "forecast", s.nowIndex)
+    expect(simulate(pop, calm, get("site-only"), 5).siteHour.every((h) => h === -1)).toBe(true)
+  })
+
+  it("shows managed workers as protected on the map once the manager acts", () => {
+    const i = site.outcome.siteHour.findIndex((h) => h >= 0)
+    const h = site.outcome.siteHour[i]
+    expect(stateAt(pop[i], site.outcome, win, h, 5)).toBe("protected")
+  })
+})

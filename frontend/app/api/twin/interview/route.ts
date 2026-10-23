@@ -16,6 +16,7 @@ const Body = z.object({
   exposureHours: z.number().min(0).max(48),
   intervention: z.string().max(120),
   message: z.enum(["generic", "complete", "none"]),
+  siteManaged: z.boolean().optional(),
   question: z.string().min(2).max(300),
 })
 
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
     exposureHours: b.exposureHours,
     intervention: b.intervention,
     message: b.message,
+    siteManaged: b.siteManaged,
   }
   const persona = PERSONA_BY_ID[b.persona]
   let source: "claude" | "template" = "template"
@@ -51,8 +53,13 @@ export async function POST(req: Request) {
           intervention_tested: b.intervention,
           question: b.question,
         }),
-        maxTokens: 300,
+        maxTokens: 800,
       })
+      // If the model was still cut off, end on the last complete sentence rather than mid-word.
+      if (!/[.!?"”)]$/.test(answer)) {
+        const end = Math.max(answer.lastIndexOf(". "), answer.lastIndexOf("! "), answer.lastIndexOf("? "))
+        if (end > 40) answer = answer.slice(0, end + 1)
+      }
       source = "claude"
     } catch (e) {
       if (!(e instanceof LlmNotConfigured)) {

@@ -127,8 +127,9 @@ export async function runAgent(snapshot: Snapshot, opts: AgentOptions = {}): Pro
         PRESET_INTERVENTIONS[0],
         { id: "generic-now", label: "Generic alert, sent now", leadHours: 0, message: "generic" as const },
         { id: "complete-now", label: "Complete advisory, sent now", leadHours: 0, message: "complete" as const },
+        { id: "complete-site-now", label: "Complete advisory + site-manager action, sent now", leadHours: 0, message: "complete" as const, siteAction: true },
       ]
-    : [PRESET_INTERVENTIONS[0], PRESET_INTERVENTIONS[1], PRESET_INTERVENTIONS[2], PRESET_INTERVENTIONS[3]]
+    : [PRESET_INTERVENTIONS[0], PRESET_INTERVENTIONS[1], PRESET_INTERVENTIONS[2], PRESET_INTERVENTIONS[3], PRESET_INTERVENTIONS.find((i) => i.id === "complete-6h-site")!]
   const compared = compare(pop, win, interventions)
   const scenarios: ScenarioSummary[] = compared.map(({ outcome, summary }) => ({
     label: outcome.intervention.label,

@@ -116,10 +116,21 @@ export const AMBIENT: Record<ChannelId, number> = { whatsapp: 0.55, official: 0.
 /** How much a message's quality changes the chance people act (complete = what/where/when/action). Illustrative. */
 export const MESSAGE_FACTOR = { generic: 0.6, complete: 1 } as const
 
+/** Share of outdoor-worker crews whose site manager acts on a notification. ILLUSTRATIVE (D-27). */
+export const SITE_COMPLIANCE = 0.6
+
+/**
+ * Residual exposure multiplier for a worker whose site manager reschedules heavy outdoor work and adds
+ * work-rest cycles (lower = better protected). ILLUSTRATIVE (D-27); replace with operator interviews.
+ */
+export const SITE_PROTECT = 0.4
+
 export const PRESET_INTERVENTIONS: Intervention[] = [
   { id: "baseline", label: "No proactive warning", leadHours: null, message: "generic" },
   { id: "generic-1h", label: "Generic alert, 1 h before", leadHours: 1, message: "generic" },
   { id: "complete-1h", label: "Complete advisory, 1 h before", leadHours: 1, message: "complete" },
   { id: "complete-6h", label: "Complete advisory, 6 h before", leadHours: 6, message: "complete" },
   { id: "complete-12h", label: "Complete advisory, 12 h before", leadHours: 12, message: "complete" },
+  { id: "site-only", label: "Site-manager action only (no resident warning)", leadHours: null, message: "generic", siteAction: true },
+  { id: "complete-6h-site", label: "Complete advisory, 6 h before + site-manager action", leadHours: 6, message: "complete", siteAction: true },
 ]

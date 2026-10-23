@@ -73,10 +73,11 @@ What has actually been run, not what has been written. A row here needs a real c
 | 2026-10-22 | Backend tests after the Anthropic swap | `pytest` in a venv with `chromadb` **stubbed** (see Known gaps) | ✅ **122 passed** (includes 2 new `test_llm_client.py`) |
 | 2026-10-23 | Stress test, build | 40 page×viewport×theme loads, hostile API inputs, 20× parallel snapshot, prompt injection, 8 real photos, simulated total data outage | ✅ after 5 fixes; see [`stress-test-2026-10-23.md`](stress-test-2026-10-23.md) |
 | 2026-10-23 | Stress test, idea | 900-draw sensitivity analysis of the twin's illustrative parameters; per-persona effects | ✅ ordering of interventions stable; ⚠ headline effect ≈10%, lead time beyond ~1 h adds little, outdoor workers barely helped (details and judge Q&A in the same doc) |
+| 2026-10-23 | Site-manager lever (D-27) | 5 new unit tests (84 total); real-browser pass of the new options; live interview of a site-managed worker | ✅ outdoor-worker exposure −30% (site action alone) vs −3% (warning alone), illustrative parameters; interview answer mentions the site manager |
 
 ### Defects found by the batch and fixed (D-20)
 
-- (2026-10-23 stress test) Agent said "at or below 100" with no data at all; `/twin` 500 when the air-quality feed was down; photo check 502 when the model returned more than 6 observations; no limits on the endpoints that spend API credit; resident dots nearly impossible to click. All fixed; details in the stress-test doc.
+- (2026-10-23 interview answers cut off mid-word and photo-check JSON at risk: the model's token budget also covers its reasoning, so the limits were raised and cut-off answers end on a full sentence.) (2026-10-23 stress test) Agent said "at or below 100" with no data at all; `/twin` 500 when the air-quality feed was down; photo check 502 when the model returned more than 6 observations; no limits on the endpoints that spend API credit; resident dots nearly impossible to click. All fixed; details in the stress-test doc.
 - MapLibre 6 worker not loading under Turbopack → copy worker to `public/` (D-24).
 - MapLibre's CSS overrode the container's `position`, collapsing the map to 300 px → inline positioning.
 - Replay window started inside the haze (history too short, onset not chosen) → 21 days of history, onset-based window.

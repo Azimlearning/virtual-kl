@@ -1,6 +1,6 @@
 import type { FocusArea } from "@/lib/kl/types"
 import { MOE_THRESHOLDS } from "@/lib/kl/policy"
-import { AMBIENT, DELIVERY, MESSAGE_FACTOR, PERSONAS, PERSONA_BY_ID } from "./personas"
+import { AMBIENT, DELIVERY, MESSAGE_FACTOR, PERSONAS, PERSONA_BY_ID, SITE_COMPLIANCE, SITE_PROTECT } from "./personas"
 import { clamp, hash01, mulberry32, normal } from "./prng"
 import type {
   ChannelId,
@@ -144,10 +144,12 @@ export function simulate(pop: Resident[], win: Window, iv: Intervention, seed = 
   const n = pop.length
   const informedHour = new Int16Array(n).fill(-1)
   const actHour = new Int16Array(n).fill(-1)
+  const siteHour = new Int16Array(n).fill(-1)
   const exposure = new Float32Array(n)
   const len = win.values.length
   const event = win.eventStart
   const sendHour = iv.leadHours == null || event < 0 ? null : Math.max(0, event - iv.leadHours)
+  const siteSend = iv.siteAction && event >= 0 ? Math.max(0, event - (iv.leadHours ?? 0)) : null
 
   for (let i = 0; i < n; i++) {
     const r = pop[i]
@@ -184,16 +186,22 @@ export function simulate(pop: Resident[], win: Window, iv: Intervention, seed = 
       if (u4 < p) actHour[i] = Math.min(len - 1, learned + (u5 < 0.5 ? 0 : 1))
     }
 
+    // A site manager who gets the notification reschedules the crew's heavy outdoor work an hour later.
+    if (siteSend != null && r.persona === "outdoor-worker" && hash01(r.id, 7, seed) < SITE_COMPLIANCE) {
+      siteHour[i] = Math.min(len - 1, siteSend + 1)
+    }
+
     let exp = 0
     for (let h = 0; h < len; h++) {
       if (win.values[h] <= THRESHOLD) continue
       const out = persona.outdoor[hourOfDay(win, h)]
       const protectedNow = actHour[i] >= 0 && h >= actHour[i]
-      exp += out * (protectedNow ? persona.protect : 1)
+      const siteNow = siteHour[i] >= 0 && h >= siteHour[i]
+      exp += out * Math.min(protectedNow ? persona.protect : 1, siteNow ? SITE_PROTECT : 1)
     }
     exposure[i] = exp
   }
-  return { intervention: iv, informedHour, actHour, exposure, sendHour }
+  return { intervention: iv, informedHour, actHour, siteHour, exposure, sendHour }
 }
 
 export function summarize(pop: Resident[], win: Window, out: Outcome): Summary {
@@ -201,6 +209,7 @@ export function summarize(pop: Resident[], win: Window, out: Outcome): Summary {
   let informed = 0
   let acted = 0
   let actedBefore = 0
+  let siteManaged = 0
   let totalExp = 0
   const per = new Map<PersonaId, { n: number; exp: number; acted: number }>()
   for (let i = 0; i < pop.length; i++) {
@@ -213,6 +222,7 @@ export function summarize(pop: Resident[], win: Window, out: Outcome): Summary {
       p.acted++
       if (win.eventStart >= 0 && out.actHour[i] <= win.eventStart) actedBefore++
     }
+    if (out.siteHour[i] >= 0) siteManaged++
     totalExp += out.exposure[i]
     per.set(pop[i].persona, p)
   }
@@ -230,6 +240,7 @@ export function summarize(pop: Resident[], win: Window, out: Outcome): Summary {
     informedPct: (100 * informed) / n,
     actedPct: (100 * acted) / n,
     actedBeforeEventPct: (100 * actedBefore) / n,
+    siteManagedPct: (100 * siteManaged) / n,
     meanExposureHours: totalExp / n,
     byPersona,
   }
@@ -272,7 +283,7 @@ export function isOutdoors(r: Resident, win: Window, h: number, seed = 1): boole
 
 export function stateAt(r: Resident, out: Outcome, win: Window, h: number, seed = 1): ResidentState {
   const informed = out.informedHour[r.id] >= 0 && h >= out.informedHour[r.id]
-  const prot = out.actHour[r.id] >= 0 && h >= out.actHour[r.id]
+  const prot = (out.actHour[r.id] >= 0 && h >= out.actHour[r.id]) || (out.siteHour[r.id] >= 0 && h >= out.siteHour[r.id])
   if (!prot && win.values[h] > THRESHOLD && isOutdoors(r, win, h, seed)) return "exposed"
   if (prot) return "protected"
   if (informed) return "informed"

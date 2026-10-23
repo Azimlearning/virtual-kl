@@ -69,6 +69,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
   const [ivId, setIvId] = useState("complete-6h")
   const [customLead, setCustomLead] = useState(3)
   const [customMsg, setCustomMsg] = useState<MessageQuality>("complete")
+  const [customSite, setCustomSite] = useState(false)
   const [popSize, setPopSize] = useState(2000)
   const [hour, setHour] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -85,8 +86,8 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
   const pop = useMemo(() => generatePopulation(focus, popSize, SEED), [focus, popSize])
 
   const custom: Intervention = useMemo(
-    () => ({ id: "custom", label: `Custom: ${customMsg} advisory, ${customLead} h before`, leadHours: customLead, message: customMsg }),
-    [customLead, customMsg],
+    () => ({ id: "custom", label: `Custom: ${customMsg} advisory, ${customLead} h before${customSite ? " + site-manager action" : ""}`, leadHours: customLead, message: customMsg, siteAction: customSite }),
+    [customLead, customMsg, customSite],
   )
   const interventions = useMemo(() => [...PRESET_INTERVENTIONS, custom], [custom])
   const results = useMemo(() => compare(pop, win, interventions, SEED), [pop, win, interventions])
@@ -182,6 +183,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
           exposureHours: sel.outcome.exposure[selectedResident.id],
           intervention: sel.outcome.intervention.label,
           message: sel.outcome.intervention.leadHours == null ? "none" : sel.outcome.intervention.message,
+          siteManaged: sel.outcome.siteHour[selectedResident.id] >= 0,
           question: q,
         }),
       })
@@ -340,6 +342,10 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
                       </button>
                     ))}
                   </div>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" checked={customSite} onChange={(e) => setCustomSite(e.target.checked)} className="accent-primary" />
+                    Also notify site managers (outdoor crews)
+                  </label>
                 </div>
               )}
               <div className="mt-1 grid grid-cols-2 gap-2 text-xs">
@@ -347,6 +353,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
                 <Metric label="vs no warning" value={ivId === "baseline" ? "—" : `${reduction >= 0 ? "−" : "+"}${Math.abs(reduction)}%`} good={reduction > 0} />
                 <Metric label="Acted before event" value={`${sel.summary.actedBeforeEventPct.toFixed(0)}%`} />
                 <Metric label="Ever informed" value={`${sel.summary.informedPct.toFixed(0)}%`} />
+                {sel.summary.siteManagedPct > 0 && <Metric label="Site-managed" value={`${sel.summary.siteManagedPct.toFixed(1)}%`} sub="residents whose site manager acted" />}
               </div>
             </CardContent>
           </Card>

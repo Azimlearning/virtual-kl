@@ -50,6 +50,11 @@ export type Intervention = {
   /** Hours before the event start the warning goes out; null = no proactive warning (baseline). */
   leadHours: number | null
   message: MessageQuality
+  /**
+   * Also notify site managers / employers (outdoor-worker crews), who reschedule heavy outdoor work and add
+   * work-rest cycles. Sent at the same lead as the warning (at the event start when leadHours is null).
+   */
+  siteAction?: boolean
 }
 
 /** A 48-hour (or shorter) scenario of hourly AQI values. */
@@ -72,6 +77,8 @@ export type Outcome = {
   informedHour: Int16Array
   /** Hour index each resident changed behaviour, -1 if never. */
   actHour: Int16Array
+  /** Hour index from which a site manager changed this resident's outdoor work, -1 if never. */
+  siteHour: Int16Array
   /** Expected hours outdoors above the threshold, per resident. */
   exposure: Float32Array
   sendHour: number | null
@@ -90,6 +97,8 @@ export type Summary = {
   actedPct: number
   /** Share who changed behaviour by the time the event started. */
   actedBeforeEventPct: number
+  /** Share of residents whose employer's site manager changed their outdoor work. */
+  siteManagedPct: number
   meanExposureHours: number
   byPersona: PersonaSummary[]
 }
