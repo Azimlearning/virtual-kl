@@ -10,9 +10,9 @@ Entry for the **Sime Darby Property University Hackathon 2026** — track: Peopl
 
 Scope is **Kuala Lumpur** (the Federal Territory). SDP's KL East, Melawati and KLGCC developments are the featured focus areas.
 
-- **KL Pulse (`/`)** — a 3D map of KL with real DOE air-quality readings, SDP developments, a haze veil and a slow flyover; the 48-hour forecast against the official thresholds; MET Malaysia forecast and warnings; every reading shows its age.
-- **Proactive agent (`/agent`)** — watches, anticipates, rehearses the warning on the twin, decides how much autonomy it has, and drafts complete advisories in English and Bahasa Malaysia. Orange and Red wait for a human; Red is never auto-sent. Every advisory shows its guardrail result.
-- **KL Twin sandbox (`/twin`)** — thousands of simulated residents commute around a development while the real October haze is replayed (or the live forecast runs). Change when and how a warning goes out and watch who protects themselves in time; click a resident to interview them. Everything is labelled simulated, with illustrative parameters.
+- **KL Twin (`/`, the home page)** — thousands of simulated residents commute around a development while the real October haze is replayed (or the live forecast runs); it starts playing by itself. The agent rehearses every option and picks one; change the plan and watch who is protected in time; click a resident to interview them. Everything is labelled simulated, with illustrative parameters.
+- **Live data (`/live`)** — a 3D map of KL with real DOE air-quality readings, SDP developments, a haze veil and a slow flyover; the 48-hour forecast against the official thresholds; MET Malaysia forecast and warnings; every reading shows its age.
+- **Proactive agent (`/agent`, and the feed beside the twin)** — acts first: it starts when the app opens, re-checks every minute, notices changes and coming threshold crossings, rehearses the options on the twin, and drafts complete advisories in English and Bahasa Malaysia, then asks you only for the decisions that are yours. Orange and Red wait for a human; Red is never auto-sent. Every advisory shows its guardrail result.
 - **Photo check (`/check`)** — a vision model reads a resident's photo and the system compares it with the nearest live DOE reading (needs an Anthropic key).
 - **Methods & limits (`/about`)** — live source status, what is simulated, known limits.
 
@@ -38,7 +38,7 @@ Every environment variable, and where to get it: [`refdocs/guides/env_setup.md`]
 
 ```bash
 cd frontend && npm run dev                        # http://localhost:3000
-cd frontend && npx vitest run                     # 84 unit tests
+cd frontend && npx vitest run                     # 96 unit tests
 cd frontend && npx tsc --noEmit                   # type check
 cd frontend && npm run build && npm start         # production build
 

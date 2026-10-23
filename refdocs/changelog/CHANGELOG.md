@@ -39,6 +39,12 @@ Rules that make this file worth keeping:
 - **Noted, not changed:** another session is restyling the frontend (fonts/theme/logo); the DOE feed's one carried-over KL reading; `lib/auth.ts` still stubs a single operator for the CISE pages.
 - **Known issues / next steps:** see STATUS "Next actions" (confirm A-15 before the first push; set a key and run the live Claude checks; deploy; survey).
 
+### 2026-10-23 — Twin first, agent acts first (D-28)
+- **Reported:** user: "the app core needs to be readjusted: make the civilisation simulation the main thing of the page, secondary the proactive agent; make the agents actually more proactive, like taking initiative rather than waiting (reactive vs proactive)". Also: "browser doesn't need a stress test right now".
+- **Changed:** home `/` is the twin (auto-plays, agent narration, "Agent's pick", agent feed in the right column); Pulse moved to `/live`; `/twin` redirects; nav reordered; new `lib/kl/proactive.ts`, `components/kl/agent-provider.tsx`, `components/kl/agent-feed.tsx` (feed, status line, dock); layout mounts the provider; `/agent` shows the agent's own activity above the on-demand console; 12 new tests (96).
+- **Decided:** D-28 (also the honest limit: it runs while a tab is open).
+- **Verified:** `tsc`, 96 tests, production build, one render check (agent status within 4 s; drafted advisories and rehearsal appeared without any click; plan applies; dock; redirect). **Not verified:** the desktop-notification path, behaviour on the hosted site until redeployed.
+
 ### 2026-10-23 — Site-manager lever, survey ownership, pitch notes
 - **Reported:** user: "sure, add a site manager option" (then: "if it's a feature that will help us win, build it"); "not sure who runs the survey, you decide"; "take note on the key points of this project, it's important for slides and video"; wants it hosted on Vercel from the virtual-kl GitHub repo.
 - **Changed:** twin engine (`siteAction`, `SITE_COMPLIANCE`, `SITE_PROTECT`, `siteHour`, `siteManagedPct`), two presets + a custom toggle, agent rehearsal, resident interview (site-managed facts), 5 tests (84), interview/vision token limits, D-27, survey ownership and operator interviews in `guides/resident-survey.md`, new `refdocs/pitch-notes.md`, memory pointer.

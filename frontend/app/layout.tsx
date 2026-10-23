@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import { Fraunces, Instrument_Sans, JetBrains_Mono } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
+import { AgentProvider } from '@/components/kl/agent-provider'
+import { AgentDock } from '@/components/kl/agent-feed'
 import './globals.css'
 
 // Display serif for headlines and big numerals, a humanist sans for body, mono for data labels.
@@ -58,7 +60,10 @@ export default function RootLayout({
     >
       <body className="font-sans antialiased">
         <ThemeProvider>
-          {children}
+          <AgentProvider>
+            {children}
+            <AgentDock />
+          </AgentProvider>
           <Toaster position="top-right" richColors />
         </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}

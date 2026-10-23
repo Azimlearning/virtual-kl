@@ -62,9 +62,9 @@ These are confirmed from the hackathon key notes, the team chat, and the user's 
 
 ```
 FREE DATA SOURCES (live-checked 2026-10-22)        VIRTUAL KL — Next.js app (frontend/)                         BROWSER PAGES
-DOE API via Haze Monitor (2 KL stations) ──┐      lib/kl/sources.ts   fetch + zod validation, per-source freshness   /       KL Pulse: 3D map, forecast, MET
+DOE API via Haze Monitor (2 KL stations) ──┐      lib/kl/sources.ts   fetch + zod validation, per-source freshness   /live    Live data: 3D map, forecast, MET
 Open-Meteo CAMS air quality (21 d + 3 d) ──┤      lib/kl/snapshot.ts  bias-adjusted 48 h forecast                    /agent  Proactive agent console
-Open-Meteo WeatherNext 2 ensemble (rain) ──┤      lib/kl/agent.ts     Watch → Anticipate → Simulate → Decide → Act    /twin   KL Twin sandbox (deck.gl + MapLibre)
+Open-Meteo WeatherNext 2 ensemble (rain) ──┤      lib/kl/agent.ts     Watch → Anticipate → Simulate → Decide → Act    /       KL Twin home + proactive agent feed
 MET forecast + warnings (data.gov.my) ─────┤      lib/kl/guardrails.ts numbers · level · claims · completeness        /check  Photo check (Claude vision)
 JPS flood stations (FROZEN 2024-02-23) ────┘      lib/twin/*          seeded population engine, 8 personas             /about  Methods & limits
 OpenFreeMap vector tiles (3D buildings) ─────────────────────────────────────────────────────────────────────────► map
@@ -185,6 +185,7 @@ Canonical one-line list. Load-bearing entries are expanded as ADRs in `changelog
 | D-24 | 3D = MapLibre 6 + deck.gl over OpenFreeMap; worker file copied at build; dark-mode filter; Pulse flyover | Verified in a real browser; free, no key |
 | D-25 | No API key means labelled templates (vision returns 503), never fake AI | Honesty; no key in the build environment |
 | D-26 | Verification builds use `NEXT_DIST_DIR=.next-verify` | A concurrent `next dev` clobbers `.next` |
+| D-28 | The twin is the home page; the agent acts first (autonomous loop, rehearses and drafts unprompted, asks only for decisions) | Proactive means initiative, and the simulation is the distinctive part |
 | D-27 | Site-manager action is a lever in the sandbox | Outdoor workers are the most exposed and least helped by warnings; SDP's own sites are those workers |
 
 ---

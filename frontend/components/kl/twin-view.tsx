@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Loader2, MessageSquareQuote, Pause, Play, RotateCcw } from "lucide-react"
+import Link from "next/link"
+import { Bot, Loader2, MessageSquareQuote, Pause, Play, RotateCcw } from "lucide-react"
 import {
   Area,
   AreaChart,
@@ -17,6 +18,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { AgentFeed } from "@/components/kl/agent-feed"
+import { useAgent } from "@/components/kl/agent-provider"
 import { KlMap } from "@/components/kl/kl-map-client"
 import { SimulatedBadge } from "@/components/kl/ui"
 import { Button } from "@/components/ui/button"
@@ -78,6 +81,10 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
   const [asking, setAsking] = useState(false)
   const [answer, setAnswer] = useState<Answer | null>(null)
   const [askError, setAskError] = useState<string | null>(null)
+  // The agent rehearses every option and picks one on its own; the human can override.
+  const userChose = useRef(false)
+  const [forced, setForced] = useState<string | null>(null)
+  const { proposal } = useAgent()
 
   const focus = focusById(focusId)
   const times = useMemo(() => series.map((p) => p.t), [series])
@@ -93,6 +100,14 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
   const results = useMemo(() => compare(pop, win, interventions, SEED), [pop, win, interventions])
   const sel = results.find((r) => r.outcome.intervention.id === ivId) ?? results[0]
   const baseline = results[0]
+  const agentPick = useMemo(() => {
+    let best = results[0]
+    for (const r of results) {
+      if (r.outcome.intervention.id === "custom") continue
+      if (r.summary.meanExposureHours < best.summary.meanExposureHours - 1e-9) best = r
+    }
+    return best
+  }, [results])
   const series2 = useMemo(() => stateSeries(pop, sel.outcome, win, SEED), [pop, sel, win])
 
   // reset the playhead when the scenario changes
@@ -102,6 +117,30 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
     setSelectedId(null)
     setAnswer(null)
   }, [focusId, mode, popSize])
+
+  // Agent takes the wheel: pick the best option whenever the scenario changes, unless the human chose.
+  useEffect(() => {
+    if (forced) setIvId(forced)
+    else if (!userChose.current) setIvId(agentPick.outcome.intervention.id)
+  }, [agentPick, forced])
+
+  // The agent proposed a plan from its own rehearsal (feed: "Show it on the twin").
+  useEffect(() => {
+    if (!proposal) return
+    userChose.current = false
+    setForced(proposal.interventionId)
+    setMode("forecast")
+    setFocusId(proposal.focusId)
+    const t = setTimeout(() => setPlaying(true), 900)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [proposal?.nonce])
+
+  // Alive on arrival: start the replay by itself.
+  useEffect(() => {
+    const t = setTimeout(() => setPlaying(true), 2500)
+    return () => clearTimeout(t)
+  }, [])
 
   useEffect(() => {
     if (!playing) return
@@ -147,6 +186,24 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
       })),
     [win, series2],
   )
+  const milestones = useMemo(() => {
+    const m: { h: number; text: string }[] = []
+    const o = sel.outcome
+    if (o.sendHour != null) m.push({ h: o.sendHour, text: `Sends the ${o.intervention.message} advisory${o.intervention.leadHours ? `, ${o.intervention.leadHours} h before the haze` : " now"}` })
+    const siteH = o.siteHour.reduce((mn, v) => (v >= 0 && (mn < 0 || v < mn) ? v : mn), -1)
+    if (siteH >= 0) m.push({ h: siteH, text: "Site managers notified: heavy outdoor work moves, rest breaks added" })
+    if (win.eventStart >= 0) m.push({ h: win.eventStart, text: "AQI crosses 100" })
+    let peakI = 0
+    win.values.forEach((v, i) => { if (v > win.values[peakI]) peakI = i })
+    if (win.values[peakI] > 100) m.push({ h: peakI, text: `Peak AQI ${Math.round(win.values[peakI])}` })
+    if (win.eventStart >= 0) {
+      const back = win.values.findIndex((v, i) => i > peakI && v <= 100)
+      if (back > 0) m.push({ h: back, text: "AQI back under 100" })
+    }
+    return m.sort((a, b) => a.h - b.h)
+  }, [sel, win])
+  const narrationNow = [...milestones].filter((x) => x.h <= hour).pop()
+  const narrationNext = milestones.find((x) => x.h > hour)
   const hourText = `${dayLabel(win.times[hour] ?? win.times[0])} · ${hourLabel(win.times[hour] ?? win.times[0])}`
   const aqiNow = Math.round(win.values[hour] ?? 0)
 
@@ -221,7 +278,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
                 setAnswer(null)
               }}
               hazeIndex={aqiNow}
-              className="h-[600px]"
+              className="h-[70vh] min-h-[520px]"
             />
             <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-2">
               <div className="rounded-lg bg-background/85 px-3 py-2 shadow ring-1 ring-foreground/10 backdrop-blur">
@@ -243,6 +300,13 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
                   </p>
                 ))}
               </div>
+            </div>
+            <div className="pointer-events-none absolute bottom-8 left-3 max-w-[min(22rem,calc(100%-1.5rem))] rounded-lg bg-background/90 px-3 py-2 text-xs shadow ring-1 ring-foreground/10 backdrop-blur">
+              <p className="flex items-center gap-1.5 font-semibold">
+                <Bot className="h-3.5 w-3.5 text-primary" aria-hidden /> Agent
+              </p>
+              <p className="mt-0.5 leading-snug">{narrationNow ? narrationNow.text : "Watching the forecast; nothing to do yet."}</p>
+              {narrationNext && <p className="mt-0.5 text-muted-foreground">Next: {narrationNext.text.toLowerCase()} in {narrationNext.h - hour} h</p>}
             </div>
           </div>
 
@@ -281,12 +345,26 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
         <div className="flex flex-col gap-4">
           <Card size="sm">
             <CardHeader>
+              <CardTitle className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2"><Bot className="h-4 w-4 text-primary" /> Proactive agent</span>
+                <Link href="/agent" className="text-xs font-normal text-primary hover:underline">all activity →</Link>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="max-h-[22rem] overflow-y-auto pr-1">
+                <AgentFeed limit={4} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card size="sm">
+            <CardHeader>
               <CardTitle>Scenario</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
               <label className="flex flex-col gap-1">
                 <span className="text-xs font-medium text-muted-foreground">Where in KL</span>
-                <select value={focusId} onChange={(e) => setFocusId(e.target.value)} className="h-8 rounded-lg border border-input bg-transparent px-2">
+                <select value={focusId} onChange={(e) => { userChose.current = false; setForced(null); setFocusId(e.target.value) }} className="h-8 rounded-lg border border-input bg-transparent px-2">
                   {FOCUS_AREAS.map((f) => (
                     <option key={f.id} value={f.id} className="bg-card">
                       {f.name}
@@ -300,7 +378,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
                 <span className="text-xs font-medium text-muted-foreground">Haze scenario</span>
                 <div className="grid grid-cols-2 gap-1 rounded-lg border border-border p-0.5 text-xs">
                   {([["replay", "Replay: real Oct haze"], ["forecast", "Live 48 h forecast"]] as const).map(([m, l]) => (
-                    <button key={m} onClick={() => setMode(m)} className={cn("rounded-md px-2 py-1.5 font-medium", mode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground")}>
+                    <button key={m} onClick={() => { userChose.current = false; setForced(null); setMode(m) }} className={cn("rounded-md px-2 py-1.5 font-medium", mode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground")}>
                       {l}
                     </button>
                   ))}
@@ -309,7 +387,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
               </div>
               <label className="flex flex-col gap-1">
                 <span className="text-xs font-medium text-muted-foreground">Synthetic residents</span>
-                <select value={popSize} onChange={(e) => setPopSize(Number(e.target.value))} className="h-8 rounded-lg border border-input bg-transparent px-2">
+                <select value={popSize} onChange={(e) => { userChose.current = false; setForced(null); setPopSize(Number(e.target.value)) }} className="h-8 rounded-lg border border-input bg-transparent px-2">
                   {[1000, 2000, 3000].map((n) => (
                     <option key={n} value={n} className="bg-card">{n.toLocaleString("en-GB")}</option>
                   ))}
@@ -323,9 +401,18 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
               <CardTitle>Intervention — what do we do?</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-2 text-sm">
+              <p className="rounded-lg bg-primary/10 p-2 text-xs leading-snug">
+                <span className="font-semibold">Agent&apos;s pick after rehearsing {results.length - 1} options:</span> {agentPick.outcome.intervention.label}
+                {baseline.summary.meanExposureHours > 0 && agentPick.outcome.intervention.id !== "baseline" ? ` (${Math.round((100 * (baseline.summary.meanExposureHours - agentPick.summary.meanExposureHours)) / baseline.summary.meanExposureHours)}% less exposure than doing nothing)` : ""}.
+                {ivId !== agentPick.outcome.intervention.id && (
+                  <button className="ml-1 font-semibold text-primary underline" onClick={() => { userChose.current = false; setForced(null); setIvId(agentPick.outcome.intervention.id) }}>
+                    use it
+                  </button>
+                )}
+              </p>
               {interventions.map((iv) => (
                 <label key={iv.id} className={cn("flex cursor-pointer items-start gap-2 rounded-lg border p-2 text-[13px] leading-snug", ivId === iv.id ? "border-primary bg-primary/10" : "border-border")}>
-                  <input type="radio" name="iv" checked={ivId === iv.id} onChange={() => setIvId(iv.id)} className="mt-0.5 accent-primary" />
+                  <input type="radio" name="iv" checked={ivId === iv.id} onChange={() => { userChose.current = true; setForced(null); setIvId(iv.id) }} className="mt-0.5 accent-primary" />
                   <span>{iv.label}</span>
                 </label>
               ))}

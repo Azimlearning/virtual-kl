@@ -32,9 +32,9 @@ Status vocabulary — use these exactly, and never round up:
 |---|---|---|
 | Frontend foundation | Removed Firebase/Gemini/Drizzle remnants and dead components; one lockfile; vitest; type errors no longer ignored | ✅ `tsc` clean, build passes |
 | KL data layer | DOE (Haze Monitor), Open-Meteo CAMS + WeatherNext 2 ensemble, MET forecast/warnings, JPS (frozen) | ✅ live endpoint returns all sources with freshness |
-| KL Pulse (`/`) | 3D map, DOE columns, SDP focus rings, haze veil, flyover; stats; 48 h chart; MET panels | ✅ rendered in a real browser, 0 errors |
-| Proactive agent (`/agent`) | 5 steps, day-aware times, rehearsal on the twin, EN/BM advisories, guardrails, approval queue | 🔶 Templates verified live; **Claude-written text unverified (no key)** |
-| KL Twin sandbox (`/twin`) | Seeded residents (animated commute), replay of a real onset, interventions, comparison, interviews | 🔶 Engine + UI verified; interviews use templates until a key is set |
+| Live data (`/live`, was KL Pulse) | 3D map, DOE columns, SDP focus rings, haze veil, flyover; stats; 48 h chart; MET panels | ✅ rendered in a real browser, 0 errors |
+| Proactive agent (feed on `/`, dock elsewhere, `/agent`) | Autonomous loop: first look on open, minute checks, change/crossing/outage detection, own rehearsal and pick, own drafting (Claude), asks only for decisions; 5-step console on demand | ✅ initiative engine unit-tested (12); live render check: it drafted advisories and rehearsed 7 options within seconds without a click; Claude text spot-checked |
+| KL Twin (`/`, home) | Seeded residents (animated commute), auto-play, agent narration and pick, replay of a real onset, 7 interventions incl. site-manager action, comparison, interviews (Claude) | ✅ engine + UI verified; `/twin` redirects here |
 | Photo check (`/check`) | Claude vision + DOE corroboration | 🔶 Corroboration logic tested; returns 503 without a key (verified); **vision call unverified** |
 | Methods & limits (`/about`) | Live source table, simulated vs real, limits | ✅ |
 | Anthropic client (backend) | `app/intelligence/llm_client.py`, config, compose, requirements | ✅ unit-tested with a fake SDK client; live call unverified |
@@ -74,6 +74,7 @@ What has actually been run, not what has been written. A row here needs a real c
 | 2026-10-23 | Stress test, build | 40 page×viewport×theme loads, hostile API inputs, 20× parallel snapshot, prompt injection, 8 real photos, simulated total data outage | ✅ after 5 fixes; see [`stress-test-2026-10-23.md`](stress-test-2026-10-23.md) |
 | 2026-10-23 | Stress test, idea | 900-draw sensitivity analysis of the twin's illustrative parameters; per-persona effects | ✅ ordering of interventions stable; ⚠ headline effect ≈10%, lead time beyond ~1 h adds little, outdoor workers barely helped (details and judge Q&A in the same doc) |
 | 2026-10-23 | Site-manager lever (D-27) | 5 new unit tests (84 total); real-browser pass of the new options; live interview of a site-managed worker | ✅ outdoor-worker exposure −30% (site action alone) vs −3% (warning alone), illustrative parameters; interview answer mentions the site manager |
+| 2026-10-23 | Twin-first restructure + proactive agent (D-28) | `tsc`, 96 unit tests, production build, one real-browser render check (no stress test, by request) | ✅ home renders the twin; agent initiatives appear unprompted; "Show it on the twin" applies the plan; dock on other pages; `/twin` → 307 `/`; hosted redeploy: see CHANGELOG |
 
 ### Defects found by the batch and fixed (D-20)
 

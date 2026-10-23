@@ -11,7 +11,7 @@ Written for the team making the deck and the 5-minute video. Everything here is 
 **The story in five beats** (use as the video spine):
 1. **Problem.** In haze, residents get a number (API) and a generic alert, often after it has started. People act on what they trust and understand, and the most exposed, outdoor workers, usually can't just stay in.
 2. **Who.** Township operators and community managers (send and decide), SDP planners (compare options), and the residents they protect. Outdoor workers on SDP's own sites are the sharpest case.
-3. **Solution.** One loop: **Watch** live data → **Anticipate** the next 48 h → **Rehearse** the warning on thousands of simulated residents → **Decide** how much autonomy the agent has → **Act**: draft complete advisories in English and Bahasa Malaysia, plus a site-manager action.
+3. **Solution.** An agent that acts first, on one loop: **Watch** live data → **Anticipate** the next 48 h → **Rehearse** the warning on thousands of simulated residents → **Decide** how much autonomy the agent has → **Act**: draft complete advisories in English and Bahasa Malaysia, plus a site-manager action.
 4. **Innovation.** Rehearse before you send (a township-scale digital twin with synthetic residents), a proactive agent with guardrails and a human in the loop, photo corroboration against sensors, and honest labelling of everything simulated.
 5. **Proof.** It runs on live KL data today, with real Claude output, and the sandbox found something non-obvious: a warning alone barely helps outdoor workers; a site-manager action does.
 
@@ -27,9 +27,9 @@ Written for the team making the deck and the 5-minute video. Everything here is 
 
 | Page | One sentence for the video | What to show |
 |---|---|---|
-| **KL Pulse** `/` | The live picture of the city: real DOE readings, the 48 h forecast, SDP developments ringed on a 3D map. | Slow flyover, haze veil, the headline ("Air in the city is unhealthy"), a station tooltip. |
-| **Proactive agent** `/agent` | It watches, anticipates, rehearses, decides its own autonomy, and drafts the advisories. | Run it (~10–15 s): the five steps, the decision (Orange needs approval; Red never auto-sent), a bilingual advisory, the guardrail ticks, **Approve**. |
-| **KL Twin sandbox** `/twin` | Thousands of simulated residents commute around a development while the real haze replays; change the plan and watch who is protected in time. | Replay mode, press play, switch interventions, click a dot or pick a persona and interview them (answered by Claude). |
+| **KL Twin (home)** `/` | Thousands of simulated residents commute around a development while the real haze replays, and it starts by itself. The agent has already rehearsed the options and picked one. | Let it auto-play; point at the agent narration on the map and the "Agent's pick"; switch interventions; pick a persona and interview them (Claude). |
+| **The agent acts first** (feed beside the twin; `/agent`) | Not a button: it watched Kuala Lumpur on its own, rehearsed seven options, drafted bilingual advisories, and only asks you to decide. | The feed within seconds of opening: *Noticed / Rehearsed / Drafted*, the "needs you" chips; click **Show it on the twin**, then **Approve all**; mention Red is never auto-sent. |
+| **Live data** `/live` | The real picture it is acting on: DOE readings, 48 h forecast, MET, source freshness. | Slow flyover, headline, a station tooltip. |
 | **Photo check** `/check` | A resident's photo is read by a vision model and checked against the nearest live sensor: corroborated, contradicted or unverified. | Upload a hazy skyline → *corroborated* (Cheras API 114, 5.8 km); a clear photo → *unverified*, never a guess. |
 | **Methods & limits** `/about` | Live source status, what is simulated, known limits. | Show it on screen briefly; it answers "is this real?". |
 
@@ -91,9 +91,9 @@ Scalability: 28 active SDP townships; KL first (KL East, Melawati, KLGCC), the f
 ## 8. Five-minute video skeleton
 
 - 0:00 Hook: Batu Muda at API 155 on 22 Oct; "what does an operator do at 2 PM?"
-- 0:30 Pulse (the live picture, 10 s of flyover).
-- 1:00 Agent run → decision → bilingual advisory → approve.
-- 2:00 Twin replay → compare warning vs none → interview a resident.
+- 0:30 Open the app: the twin is already playing and the agent has already looked, rehearsed and drafted (no click). Say what it noticed.
+- 1:15 The agent's pick, its narration on the map; approve the drafts (a human decides; Red is never auto-sent).
+- 2:00 Compare options on the twin → interview a resident.
 - 3:15 **The finding:** outdoor workers barely helped → add the site-manager action → −30%.
 - 4:00 Photo check (haze → corroborated; clear → unverified).
 - 4:30 Honest limits + what the survey and interviews will replace; close on the loop.
@@ -101,7 +101,7 @@ Scalability: 28 active SDP townships; KL first (KL East, Melawati, KLGCC), the f
 ## 9. Say these, don't say those
 
 **Say:** "simulated, with illustrative parameters"; "direction is robust, size is an assumption"; "a human approves Orange and Red; Red is never auto-sent"; "it rehearses before it sends".
-**Don't say:** "proven to reduce exposure"; "predicts haze" (we shift a model forecast; it's indicative); "real-time flood" (JPS is frozen); "sends alerts" (it drafts and a human approves; delivery isn't wired); "validated with residents" (not yet); "first"/"only" (APIMS, NADMA and MCMC exist).
+**Don't say:** "runs in the background 24/7" (the agent loop runs while a tab is open; a scheduled worker is the roadmap); "proven to reduce exposure"; "predicts haze" (we shift a model forecast; it's indicative); "real-time flood" (JPS is frozen); "sends alerts" (it drafts and a human approves; delivery isn't wired); "validated with residents" (not yet); "first"/"only" (APIMS, NADMA and MCMC exist).
 
 ## 10. Likely judge questions (short answers)
 

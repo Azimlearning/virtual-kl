@@ -20,9 +20,9 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { BrandLogo } from "@/components/brand-logo"
 
 const KL_NAV = [
-  { href: "/", label: "Pulse", icon: Radar },
+  { href: "/", label: "KL Twin", icon: Boxes },
   { href: "/agent", label: "Agent", icon: Bot },
-  { href: "/twin", label: "Twin sandbox", icon: Boxes },
+  { href: "/live", label: "Live data", icon: Radar },
   { href: "/check", label: "Photo check", icon: Camera },
   { href: "/about", label: "Methods & limits", icon: Info },
 ]
