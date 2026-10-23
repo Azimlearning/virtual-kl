@@ -165,6 +165,7 @@ export function AgentDock() {
         }}
         className="flex items-center gap-2 rounded-full border border-border bg-background px-3.5 py-2 text-sm font-medium shadow-lg hover:bg-muted"
         aria-label="Open the proactive agent"
+        data-tour="agent-dock"
       >
         <Bot className="h-4 w-4 text-primary" />
         Agent · {status === "thinking" ? "checking" : "watching"}

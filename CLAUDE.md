@@ -79,7 +79,7 @@ The CISE pages inside the app (`/engine`, `/incidents`, `/alerts`, `/reports`, `
 |---|---|---|
 | Demo app (dev) | `cd frontend && npm install --legacy-peer-deps && npm run dev` | http://localhost:3000. `predev` copies the MapLibre worker into `public/maplibre/`. Works without any key (templates) |
 | Type check | `cd frontend && npx tsc --noEmit` | Clean as of 2026-10-22 |
-| Unit tests | `cd frontend && npx vitest run` | 104 pass |
+| Unit tests | `cd frontend && npx vitest run` | 106 pass |
 | Production build | `cd frontend && npm run build` then `npm start` | If another `next dev` is running in the same folder, build with `NEXT_DIST_DIR=.next-verify` (D-26) |
 | Backend tests | create a venv, `pip install -r requirements.txt`, `python -m pytest -q` | Needs Python 3.12 or Docker for `chromadb`; on 3.13/Windows `chroma-hnswlib` can't build (STATUS Known gaps). 122 pass with a stubbed import |
 | Full CISE stack | `docker compose up --build` | API :8000, UI :3000, Postgres :5433, Chroma :8001, Neo4j :7474 |

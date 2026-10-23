@@ -80,12 +80,19 @@ export const SLIDES: Slide[] = [
   },
 ]
 
-export type TourStop = { target: string; title: string; text: string }
+export type TourStop = { path: string; target: string; title: string; text: string }
 
+/** The tour walks the whole app and moves between pages by itself; each stop names the page it lives on. */
 export const TOUR_STOPS: TourStop[] = [
-  { target: "map", title: "The twin", text: "Each dot is a simulated resident. Grey: not yet aware. Amber: informed. Green: protected. Red: outdoors in the haze." },
-  { target: "timeline", title: "The 48 hours", text: "Play, pause or drag to any hour. It starts playing by itself." },
-  { target: "agent", title: "The agent works on its own", text: "What it noticed, rehearsed and drafted appears here. \"Needs you\" means it is waiting for your decision." },
-  { target: "interventions", title: "Its pick, and your options", text: "The agent already picked the option that leaves residents least exposed. Try the others and compare." },
-  { target: "interview", title: "Ask a resident", text: "Click a dot, or pick a type of resident here, then ask them why they acted or didn't." },
+  { path: "/", target: "map", title: "The twin", text: "Each dot is a simulated resident. Grey: not yet aware. Amber: informed. Green: protected. Red: outdoors in the haze." },
+  { path: "/", target: "timeline", title: "The 48 hours", text: "Play, pause or drag to any hour. It starts playing by itself." },
+  { path: "/", target: "agent", title: "The agent works on its own", text: "What it noticed, rehearsed and drafted appears here. \"Needs you\" means it is waiting for your decision." },
+  { path: "/", target: "interventions", title: "Its pick, and your options", text: "The agent already picked the option that leaves residents least exposed. Try the others and compare." },
+  { path: "/", target: "interview", title: "Ask a resident", text: "Click a dot, or pick a type of resident here, then ask them why they acted or didn't." },
+  { path: "/agent", target: "agent-activity", title: "Everything it did without being asked", text: "The same feed in full: it noticed, rehearsed, drafted. Approving a draft sends nothing in this prototype." },
+  { path: "/agent", target: "agent-console", title: "Run the full loop on demand", text: "Watch, anticipate, rehearse, decide, act, step by step, with the guardrail check on each advisory." },
+  { path: "/live", target: "live-map", title: "The real air it is acting on", text: "Live DOE readings, SDP developments ringed, and the haze over the city. The flood layer is greyed because that feed is frozen." },
+  { path: "/live", target: "agent-dock", title: "The agent follows you", text: "On every other page it waits here, with a badge when it has something for you." },
+  { path: "/check", target: "photo-upload", title: "Check a resident's photo", text: "A vision model reads the photo; our code compares it with the nearest live sensor." },
+  { path: "/about", target: "methods", title: "What is real and what is simulated", text: "Live source status, the assumptions, and the known limits, in one place." },
 ]

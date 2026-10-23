@@ -1,8 +1,9 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { TOUR_STOPS, type TourStop } from "@/lib/intro"
+import { TOUR_STOPS } from "@/lib/intro"
 
 type Box = { top: number; left: number; width: number; height: number }
 
@@ -41,25 +42,56 @@ function useBox(el: HTMLElement | null): Box | null {
 }
 
 const BUBBLE_W = 330
-const BUBBLE_H = 190
+const BUBBLE_H = 200
 const clamp = (n: number, lo: number, hi: number) => Math.min(Math.max(n, lo), Math.max(lo, hi))
+const GIVE_UP_AFTER = 40 // polls of 100 ms: about 4 s for a page to load before a stop is skipped
 
+/**
+ * Walks the whole app. Each stop names its page; when the next stop is elsewhere the tour navigates there itself
+ * (it lives in the root layout, so it stays on screen across the route change) and waits for the target to appear.
+ */
 export function Tour({ onDone }: { onDone: () => void }) {
-  const [stops, setStops] = useState<TourStop[] | null>(null)
+  const router = useRouter()
+  const pathname = usePathname()
   const [index, setIndex] = useState(0)
+  const [el, setEl] = useState<HTMLElement | null>(null)
   const next = useRef<HTMLButtonElement | null>(null)
   const bubble = useRef<HTMLDivElement | null>(null)
+  const total = TOUR_STOPS.length
+  const stop = TOUR_STOPS[index]
 
-  // Only stops whose control is on screen right now.
+  const advance = useCallback(
+    (by: 1 | -1) => {
+      const to = index + by
+      if (to >= total) onDone()
+      else if (to >= 0) setIndex(to)
+    },
+    [index, total, onDone],
+  )
+
+  // Get to the stop's page, then wait for its target to exist.
   useEffect(() => {
-    const present = TOUR_STOPS.filter((s) => find(s.target))
-    if (present.length === 0) onDone()
-    else setStops(present)
+    setEl(null)
+    if (pathname !== stop.path) {
+      router.push(stop.path)
+      return
+    }
+    let tries = 0
+    const id = setInterval(() => {
+      const found = find(stop.target)
+      if (found) {
+        clearInterval(id)
+        setEl(found)
+      } else if (++tries > GIVE_UP_AFTER) {
+        clearInterval(id)
+        if (index + 1 >= total) onDone()
+        else setIndex(index + 1)
+      }
+    }, 100)
+    return () => clearInterval(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [index, pathname])
 
-  const stop = stops?.[index] ?? null
-  const el = stop ? find(stop.target) : null
   const box = useBox(el)
 
   useEffect(() => {
@@ -68,21 +100,6 @@ export function Tour({ onDone }: { onDone: () => void }) {
     el.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" })
     next.current?.focus()
   }, [el, index])
-
-  if (!stops || !stop || !box) return null
-  const last = index === stops.length - 1
-
-  const vw = window.innerWidth
-  const vh = window.innerHeight
-  let top: number
-  let left = clamp(box.left, 16, vw - BUBBLE_W - 16)
-  if (box.top + box.height + BUBBLE_H + 20 < vh) top = box.top + box.height + 14
-  else if (box.top - BUBBLE_H - 14 > 16) top = box.top - BUBBLE_H - 14
-  else {
-    // a tall target: sit inside it, at the bottom
-    top = clamp(Math.min(box.top + box.height, vh) - BUBBLE_H - 56, 16, vh - BUBBLE_H - 16)
-    left = clamp(box.left + box.width / 2 - BUBBLE_W / 2, 16, vw - BUBBLE_W - 16)
-  }
 
   function onKey(e: React.KeyboardEvent) {
     if (e.key === "Escape") return onDone()
@@ -97,6 +114,36 @@ export function Tour({ onDone }: { onDone: () => void }) {
       e.preventDefault()
       first.focus()
     }
+  }
+
+  // While a page is loading, keep the page dimmed with a small note instead of a hole.
+  if (!el || !box) {
+    return (
+      <div className="fixed inset-0 z-[100] grid place-items-end bg-[rgba(4,24,30,0.7)] p-6" onKeyDown={onKey}>
+        <div role="status" className="rounded-lg border border-border bg-background px-3 py-2 text-xs text-muted-foreground shadow-xl">
+          Taking you to the next page…
+          <button onClick={onDone} className="ml-3 text-foreground underline">Skip tour</button>
+        </div>
+      </div>
+    )
+  }
+
+  const last = index === total - 1
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  let top: number
+  let left = clamp(box.left, 16, vw - BUBBLE_W - 16)
+  if (box.top + box.height + BUBBLE_H + 20 < vh) top = box.top + box.height + 14
+  else if (box.top - BUBBLE_H - 14 > 16) top = box.top - BUBBLE_H - 14
+  else {
+    // a tall target: sit inside it, at the bottom
+    top = clamp(Math.min(box.top + box.height, vh) - BUBBLE_H - 56, 16, vh - BUBBLE_H - 16)
+    left = clamp(box.left + box.width / 2 - BUBBLE_W / 2, 16, vw - BUBBLE_W - 16)
+  }
+  // a target pinned to the bottom-right corner (the floating agent): put the bubble beside it, above
+  if (box.left > vw * 0.6 && box.top > vh * 0.6) {
+    top = clamp(box.top - BUBBLE_H - 14, 16, vh - BUBBLE_H - 16)
+    left = clamp(box.left + box.width - BUBBLE_W, 16, vw - BUBBLE_W - 16)
   }
 
   return (
@@ -121,7 +168,7 @@ export function Tour({ onDone }: { onDone: () => void }) {
         className="absolute flex flex-col gap-2 rounded-xl border border-border bg-background p-4 text-sm shadow-2xl"
         style={{ top, left, width: BUBBLE_W, maxWidth: "calc(100vw - 2rem)" }}
       >
-        <p className="eyebrow">{index + 1} of {stops.length}</p>
+        <p className="eyebrow">{index + 1} of {total}</p>
         <p className="text-base font-semibold leading-snug">{stop.title}</p>
         <p id="tour-text" className="leading-relaxed text-muted-foreground">{stop.text}</p>
         <div className="mt-1 flex items-center justify-between gap-2">
@@ -129,10 +176,10 @@ export function Tour({ onDone }: { onDone: () => void }) {
             Skip tour
           </button>
           <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setIndex((i) => i - 1)} disabled={index === 0}>
+            <Button variant="ghost" size="sm" onClick={() => advance(-1)} disabled={index === 0}>
               Back
             </Button>
-            <Button ref={next} size="sm" onClick={() => (last ? onDone() : setIndex((i) => i + 1))}>
+            <Button ref={next} size="sm" onClick={() => advance(1)}>
               {last ? "Done" : "Next"}
             </Button>
           </div>

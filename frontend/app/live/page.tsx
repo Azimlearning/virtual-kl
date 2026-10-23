@@ -89,12 +89,14 @@ export default async function LivePage() {
           <FreshnessChip label="JPS flood stations" status={snap.status.jps} />
         </div>
 
-        <PulseMap
-          stations={snap.stations}
-          floodStations={snap.floodStations}
-          hazeIndex={hazeForVeil}
-          jpsNote={snap.status.jps.stale ? snap.status.jps.note : undefined}
-        />
+        <div data-tour="live-map">
+          <PulseMap
+            stations={snap.stations}
+            floodStations={snap.floodStations}
+            hazeIndex={hazeForVeil}
+            jpsNote={snap.status.jps.stale ? snap.status.jps.note : undefined}
+          />
+        </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Stat

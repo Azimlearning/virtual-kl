@@ -82,7 +82,7 @@ export function PhotoCheck() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-2">
-      <Card>
+      <Card data-tour="photo-upload">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Camera className="h-4 w-4" /> A resident&apos;s photo</CardTitle>
         </CardHeader>

@@ -56,9 +56,24 @@ describe("intro copy and tour stops", () => {
     expect(all).toMatch(/Red is never sent automatically/)
   })
 
-  it("every tour stop points at a data-tour target that exists in the twin view", () => {
-    const src = fs.readFileSync(path.join(__dirname, "../components/kl/twin-view.tsx"), "utf8")
-    for (const s of TOUR_STOPS) expect(src).toContain(`data-tour="${s.target}"`)
+  const FILES = ["components/kl/twin-view.tsx", "app/agent/page.tsx", "app/live/page.tsx", "components/kl/photo-check.tsx", "app/about/page.tsx", "components/kl/agent-feed.tsx"]
+  const sources = FILES.map((f) => fs.readFileSync(path.join(__dirname, "..", f), "utf8")).join("\n")
+
+  it("every tour stop points at a data-tour target that exists in the app", () => {
+    for (const s of TOUR_STOPS) expect(sources).toContain(`data-tour="${s.target}"`)
+  })
+
+  it("walks the whole app: starts at home, visits every main page, and stays on real routes", () => {
+    expect(TOUR_STOPS[0].path).toBe("/")
+    const pages = new Set(TOUR_STOPS.map((s) => s.path))
+    for (const p of ["/", "/agent", "/live", "/check", "/about"]) expect(pages.has(p)).toBe(true)
+    for (const s of TOUR_STOPS) expect(fs.existsSync(path.join(__dirname, "../app", s.path === "/" ? "page.tsx" : `${s.path}/page.tsx`))).toBe(true)
+  })
+
+  it("keeps each page's stops together, so the tour never bounces back and forth", () => {
+    const order = TOUR_STOPS.map((s) => s.path)
+    const changes = order.filter((p, i) => i > 0 && p !== order[i - 1]).length
+    expect(changes).toBe(new Set(order).size - 1)
   })
 })
 

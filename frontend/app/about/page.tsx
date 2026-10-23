@@ -20,7 +20,7 @@ export default async function AboutPage() {
   ]
   return (
     <AppShell>
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:px-6 md:py-10">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 md:px-6 md:py-10" data-tour="methods">
         <PageHeader
           eyebrow="05 · Methods & limits"
           title="Methods & limits"

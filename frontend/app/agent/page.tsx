@@ -15,7 +15,7 @@ export default function AgentPage() {
           description="It doesn't wait to be asked. It starts when the app opens, checks Kuala Lumpur every minute, notices changes and coming threshold crossings, rehearses the options on the twin, drafts the advisories, and comes to you only for decisions that are yours. Orange and Red wait for a human; Red is never auto-sent."
         />
 
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-3" data-tour="agent-activity">
           <h2 className="font-display text-xl font-semibold">What it has done on its own</h2>
           <AgentFeed className="max-w-3xl" />
           <p className="max-w-3xl text-xs leading-relaxed text-muted-foreground">
@@ -23,7 +23,7 @@ export default function AgentPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-3" data-tour="agent-console">
           <h2 className="font-display text-xl font-semibold">Run the full loop on demand</h2>
           <AgentConsole />
         </section>

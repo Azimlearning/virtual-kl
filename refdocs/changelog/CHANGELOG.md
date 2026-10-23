@@ -39,6 +39,11 @@ Rules that make this file worth keeping:
 - **Noted, not changed:** another session is restyling the frontend (fonts/theme/logo); the DOE feed's one carried-over KL reading; `lib/auth.ts` still stubs a single operator for the CISE pages.
 - **Known issues / next steps:** see STATUS "Next actions" (confirm A-15 before the first push; set a key and run the live Claude checks; deploy; survey).
 
+### 2026-10-23 — Tour now covers every page
+- **Reported:** user: the intro and tour should go over all the pages, not just the first.
+- **Changed:** `TOUR_STOPS` has 11 stops across `/`, `/agent`, `/live`, `/check`, `/about`, each with a `path`; `Tour` navigates between pages itself and waits for the next target; `data-tour` marks added on the other pages (agent sections, live map, photo upload, methods, the agent dock); the gate no longer restricts the tour to the home page; tests (106) check every target exists, every page is visited and the stops stay grouped by page.
+- **Verified:** real browser, fresh profile starting on `/check`: intro → "Take a quick tour" → all 11 stops across 5 pages in order, bubbles in view, ends on `/about`, no return after reload, no errors. **Not verified:** phone widths.
+
 ### 2026-10-23 — Intro and tour (D-29); layout gap fixed
 - **Reported:** user: the empty space beside the Intervention card (left column) is a big gap; add a simple onboarding/intro since this is a demo (and attached the onboarding guide from another project).
 - **Changed:** the agent card moved from the right column to under the timeline so both columns end together; `lib/intro.ts` (state, slide and tour copy), `components/onboarding/{intro,tour,onboarding-gate}.tsx`, keyframes and reduced-motion delay rule in `globals.css`, `data-tour` marks on the twin view, "?" replay button in the header, `id="main"` focus target; agent pop-ups wait while a dialog is open; 8 new tests (104).
