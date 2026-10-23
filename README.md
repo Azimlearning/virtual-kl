@@ -38,7 +38,7 @@ Every environment variable, and where to get it: [`refdocs/guides/env_setup.md`]
 
 ```bash
 cd frontend && npm run dev                        # http://localhost:3000
-cd frontend && npx vitest run                     # 96 unit tests
+cd frontend && npx vitest run                     # 104 unit tests
 cd frontend && npx tsc --noEmit                   # type check
 cd frontend && npm run build && npm start         # production build
 

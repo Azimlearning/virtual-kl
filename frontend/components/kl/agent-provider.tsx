@@ -93,7 +93,9 @@ export function AgentProvider({ children }: { children: ReactNode }) {
       commit([...items.slice().reverse(), ...feedRef.current].slice(0, MAX_FEED))
       for (const it of items) {
         const notable = it.needsYou != null || it.kind === "alert" || it.kind === "anticipate" || it.kind === "data"
-        if (notable) {
+        // Stay quiet while the intro or tour is open; the feed still records it.
+        const dialogOpen = typeof document !== "undefined" && document.querySelector('[role=dialog][aria-modal=true]') != null
+        if (notable && !dialogOpen) {
           const fn = it.tone === "severe" ? toast.error : it.tone === "alert" || it.tone === "watch" ? toast.warning : toast.message
           fn(it.title, { description: it.body.length > 140 ? it.body.slice(0, 137) + "…" : it.body, duration: 9000 })
           if (typeof document !== "undefined" && document.hidden && desktopRef.current === "granted") {

@@ -263,7 +263,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
 
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="flex flex-col gap-3 lg:col-span-2">
-          <div className="relative">
+          <div className="relative" data-tour="map">
             <KlMap
               mode="twin"
               stations={stations}
@@ -310,7 +310,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+          <div className="flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10" data-tour="timeline">
             <Button size="icon" variant="outline" onClick={() => setPlaying((p) => !p)} aria-label={playing ? "Pause" : "Play"}>
               {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
             </Button>
@@ -340,10 +340,8 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
               The event is already under way at the start of this window, so every lead time collapses to &quot;now&quot;; only message quality changes the result.
             </p>
           )}
-        </div>
 
-        <div className="flex flex-col gap-4">
-          <Card size="sm">
+          <Card size="sm" data-tour="agent">
             <CardHeader>
               <CardTitle className="flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2"><Bot className="h-4 w-4 text-primary" /> Proactive agent</span>
@@ -351,12 +349,14 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="max-h-[22rem] overflow-y-auto pr-1">
-                <AgentFeed limit={4} />
+              <div className="max-h-[26rem] overflow-y-auto pr-1">
+                <AgentFeed limit={5} />
               </div>
             </CardContent>
           </Card>
+        </div>
 
+        <div className="flex flex-col gap-4">
           <Card size="sm">
             <CardHeader>
               <CardTitle>Scenario</CardTitle>
@@ -396,7 +396,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
             </CardContent>
           </Card>
 
-          <Card size="sm">
+          <Card size="sm" data-tour="interventions">
             <CardHeader>
               <CardTitle>Intervention — what do we do?</CardTitle>
             </CardHeader>
@@ -544,7 +544,7 @@ export function TwinView({ series, adjusted, nowIndex, stations }: Props) {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card data-tour="interview">
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><MessageSquareQuote className="h-4 w-4" /> Interview a simulated resident</CardTitle>
           </CardHeader>

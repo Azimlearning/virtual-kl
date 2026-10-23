@@ -11,6 +11,7 @@ import {
   Boxes,
   Camera,
   FileText,
+  CircleHelp,
   Info,
   LayoutDashboard,
   Radar,
@@ -18,6 +19,7 @@ import {
 } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { BrandLogo } from "@/components/brand-logo"
+import { replayIntro } from "@/lib/intro"
 
 const KL_NAV = [
   { href: "/", label: "KL Twin", icon: Boxes },
@@ -104,6 +106,14 @@ export function AppShell({
               </span>
               Live · Kuala Lumpur
             </span>
+            <button
+              onClick={replayIntro}
+              aria-label="Show the intro again"
+              title="Show the intro again"
+              className="grid h-8 w-8 cursor-pointer place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <CircleHelp className="h-4 w-4" aria-hidden />
+            </button>
             <ThemeToggle />
           </div>
         </div>
@@ -113,7 +123,7 @@ export function AppShell({
         </nav>
       </header>
 
-      <main className="flex-1 overflow-x-hidden">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-1 overflow-x-hidden outline-none">{children}</main>
 
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 md:px-6">

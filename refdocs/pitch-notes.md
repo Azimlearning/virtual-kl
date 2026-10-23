@@ -33,7 +33,7 @@ Written for the team making the deck and the 5-minute video. Everything here is 
 | **Photo check** `/check` | A resident's photo is read by a vision model and checked against the nearest live sensor: corroborated, contradicted or unverified. | Upload a hazy skyline → *corroborated* (Cheras API 114, 5.8 km); a clear photo → *unverified*, never a guess. |
 | **Methods & limits** `/about` | Live source status, what is simulated, known limits. | Show it on screen briefly; it answers "is this real?". |
 
-**Demo rules:** use the **Replay** (the live forecast is already above 100, so the "warn early" story collapses); run the demo on a real GPU laptop (our test machine rendered in software); record while the live feeds are up and keep the recording as the backup.
+**Demo rules:** the first visit in a browser shows a 20-second intro and tour (press Escape to skip, "?" in the header replays it); record with it skipped or use it as the opening; use the **Replay** (the live forecast is already above 100, so the "warn early" story collapses); run the demo on a real GPU laptop (our test machine rendered in software); record while the live feeds are up and keep the recording as the backup.
 
 ## 4. The headline results (all SIMULATED, illustrative parameters)
 

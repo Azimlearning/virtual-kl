@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AgentProvider } from '@/components/kl/agent-provider'
 import { AgentDock } from '@/components/kl/agent-feed'
+import { OnboardingGate } from '@/components/onboarding/onboarding-gate'
 import './globals.css'
 
 // Display serif for headlines and big numerals, a humanist sans for body, mono for data labels.
@@ -61,8 +62,10 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <ThemeProvider>
           <AgentProvider>
-            {children}
-            <AgentDock />
+            <OnboardingGate>
+              {children}
+              <AgentDock />
+            </OnboardingGate>
           </AgentProvider>
           <Toaster position="top-right" richColors />
         </ThemeProvider>

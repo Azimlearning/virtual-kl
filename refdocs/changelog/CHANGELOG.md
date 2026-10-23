@@ -39,6 +39,12 @@ Rules that make this file worth keeping:
 - **Noted, not changed:** another session is restyling the frontend (fonts/theme/logo); the DOE feed's one carried-over KL reading; `lib/auth.ts` still stubs a single operator for the CISE pages.
 - **Known issues / next steps:** see STATUS "Next actions" (confirm A-15 before the first push; set a key and run the live Claude checks; deploy; survey).
 
+### 2026-10-23 — Intro and tour (D-29); layout gap fixed
+- **Reported:** user: the empty space beside the Intervention card (left column) is a big gap; add a simple onboarding/intro since this is a demo (and attached the onboarding guide from another project).
+- **Changed:** the agent card moved from the right column to under the timeline so both columns end together; `lib/intro.ts` (state, slide and tour copy), `components/onboarding/{intro,tour,onboarding-gate}.tsx`, keyframes and reduced-motion delay rule in `globals.css`, `data-tour` marks on the twin view, "?" replay button in the header, `id="main"` focus target; agent pop-ups wait while a dialog is open; 8 new tests (104).
+- **Decided:** D-29.
+- **Verified:** real-browser run in a fresh profile: intro opens with the page inert, three slides aligned identically (title, text, buttons at the same offsets), tour walks all five stops, does not return after reload, "?" replays it, Escape closes it; column heights equal and the left column is filled. **Not verified:** phone widths and dark mode for the new dialogs.
+
 ### 2026-10-23 — Twin first, agent acts first (D-28)
 - **Reported:** user: "the app core needs to be readjusted: make the civilisation simulation the main thing of the page, secondary the proactive agent; make the agents actually more proactive, like taking initiative rather than waiting (reactive vs proactive)". Also: "browser doesn't need a stress test right now".
 - **Changed:** home `/` is the twin (auto-plays, agent narration, "Agent's pick", agent feed in the right column); Pulse moved to `/live`; `/twin` redirects; nav reordered; new `lib/kl/proactive.ts`, `components/kl/agent-provider.tsx`, `components/kl/agent-feed.tsx` (feed, status line, dock); layout mounts the provider; `/agent` shows the agent's own activity above the on-demand console; 12 new tests (96).
